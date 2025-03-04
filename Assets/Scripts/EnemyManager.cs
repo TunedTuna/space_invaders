@@ -38,6 +38,7 @@ public class EnemyManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        
         Enemy.onSpeedDeath += Enemy_onSpeedDeath;
         //create formation
         formation();
@@ -68,6 +69,7 @@ public class EnemyManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             gameOver = false;
+          
             
             Enemy.onSpeedDeath += Enemy_onSpeedDeath;
             //create formation
@@ -175,6 +177,8 @@ public class EnemyManager : MonoBehaviour
             }
         }
     }
+
+
 
 
 }
