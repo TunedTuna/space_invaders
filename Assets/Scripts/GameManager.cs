@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour
         gameFinished = false;
         fin = false;
         enemy.SetActive(false);
-        enemyAble();
+        enemyAble();//turn off
 
     }
 
@@ -69,7 +69,7 @@ public class GameManager : MonoBehaviour
             StartCoroutine(StartGameWithDelay());
             
         }
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && gameFinished)
         {
             restartGame();
         }
@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
             fin = true;
             hiscoreManager();
             player.SetActive(false);
-            enemyAble() ;
+            enemyAble() ; //turn off
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour
 
         // Now, start the game
         gameStarted = true;
-        enemyAble();
+        enemyAble();// turn on
         Debug.Log("Game Started!");
     }
 
@@ -116,7 +116,10 @@ public class GameManager : MonoBehaviour
     {
         //reset enemy, current score,player position (0,-3,0)
         score = 0;
-        
+        player.SetActive(true);
+        gameFinished = false;
+        fin = false;
+        enemyAble();// turn on
     }
 
     //score stuff ---------------------------------------------------------------
@@ -174,5 +177,11 @@ public class GameManager : MonoBehaviour
     void enemyAble()
     {
         em.enabled = !em.enabled;
+        Debug.Log($"Script is: {em.enabled}");
+    }
+    //a getter just cus-------------------------------------------
+    public bool getGameFinished()
+    {
+        return gameFinished;
     }
 }

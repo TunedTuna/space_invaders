@@ -7,8 +7,15 @@ public class Player : MonoBehaviour
     public GameObject bulletPrefab;
     public GameManager gm;
 
+    public float moveDistance = 5f;// maybe move this to game manager since enemy/play should share this
+
     public Transform shottingOffset;
-    // Update is called once per frame
+    // pulling this from pong cus im lazy rn
+    public float maxTravelHeight;
+    public float minTravelHeight;
+    public float speed;
+    //public float collisionBallSpeedUp = 1.5f;
+    public string inputAxis;
 
     private void Start()
     {
@@ -38,6 +45,12 @@ public class Player : MonoBehaviour
             //Destroy(shot, 3f);
 
         }
+
+        float direction = Input.GetAxis(inputAxis);
+        Vector3 newPosition = transform.position + new Vector3(direction, 0, 0) * speed * Time.deltaTime;
+        newPosition.x = Mathf.Clamp(newPosition.x, minTravelHeight, maxTravelHeight);
+
+        transform.position = newPosition;
     }
     private void OnDestroy()
     {
