@@ -18,17 +18,19 @@ public class GameManager : MonoBehaviour
     public GameObject legend;
     public TextMeshProUGUI currentScore_text;
     public TextMeshProUGUI hiscore_text;
-    public GameObject enemy;
+    public GameObject enemy;    //demo ver
     public GameObject player;
     //scorestuff
     private int score;
     private string scoreFilePath;
     private ScoreData scoreData= new ScoreData();
 
-    public static GameManager Instance;
-    private bool gameStarted = false;
+    public static GameManager Instance; //idk what this does...
+    private bool gameStarted = false; //to show "main menu"
     public bool gameFinished;
-    public bool fin;
+    public bool fin;    //stop Update from spamming score change
+
+    public EnemyManager em;
 
     void Start()
     {
@@ -46,6 +48,8 @@ public class GameManager : MonoBehaviour
         gameFinished = false;
         fin = false;
         enemy.SetActive(false);
+        enemyAble();
+
     }
 
     void Awake()
@@ -56,13 +60,14 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) 
+        if (Input.GetKeyDown(KeyCode.Space) &&!gameStarted) 
         {
             ////hide legend n start the game
             //legend.SetActive(false);
             //gameStarted = true;
             //Debug.Log("Game Started!");
             StartCoroutine(StartGameWithDelay());
+            
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -76,6 +81,8 @@ public class GameManager : MonoBehaviour
         {
             fin = true;
             hiscoreManager();
+            player.SetActive(false);
+            enemyAble() ;
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -95,6 +102,7 @@ public class GameManager : MonoBehaviour
 
         // Now, start the game
         gameStarted = true;
+        enemyAble();
         Debug.Log("Game Started!");
     }
 
@@ -108,8 +116,6 @@ public class GameManager : MonoBehaviour
     {
         //reset enemy, current score,player position (0,-3,0)
         score = 0;
-
-        enemy.SetActive(true);
         
     }
 
@@ -163,5 +169,10 @@ public class GameManager : MonoBehaviour
     void resetHiScore()
     {
         scoreData.highScore = 0;
+    }
+    //enemy mangager handler? ----------------------------------------------------------------
+    void enemyAble()
+    {
+        em.enabled = !em.enabled;
     }
 }

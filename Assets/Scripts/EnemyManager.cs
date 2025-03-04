@@ -27,6 +27,10 @@ public class EnemyManager : MonoBehaviour
     public float moveDistance = 5f;  // How far the parent moves left/right per step
     public float moveSpeed = 1f;     // Speed of the choppy movement
     public float speedInc;
+    public float yCoord = 0f;
+    [Header("Da RUles ")]
+    public GameManager gm;
+    public GameObject player;
 
 
 
@@ -40,7 +44,7 @@ public class EnemyManager : MonoBehaviour
         StartCoroutine(MoveParent());
         enemyRemaining = numEnemiesAcross * 3;
         speedInc = 1f / enemyRemaining;
-
+        yCoord = 0f;
     }
 
     private void Enemy_onSpeedDeath()
@@ -59,7 +63,11 @@ public class EnemyManager : MonoBehaviour
     void Update()
     {
         //move left/right until 7 then move down one. move/sec . the less enmes= smaller sec
-        
+        if(papaTransform.position.y <= player.transform.position.y)
+        {
+            gm.gameFinished = true;
+            Debug.Log("You've been invaded!");
+        }
 
 
     }
@@ -101,19 +109,25 @@ public class EnemyManager : MonoBehaviour
     {
         while (true)
         {
-            // Move right in discrete steps
+   
             for (float x = 0; x < moveDistance; x += moveSpeed)
             {
-                papaTransform.position = startPosition + new Vector3(x, 0, 0);
-                yield return new WaitForSeconds(secondsPerStep); // Pause between each step
+                papaTransform.position = startPosition + new Vector3(x, yCoord, 0);
+                yield return new WaitForSeconds(secondsPerStep); 
             }
+            yCoord -= 1f;
+            papaTransform.position = new Vector3(papaTransform.position.x, yCoord, 0);
+            yield return new WaitForSeconds(secondsPerStep);
 
-            // Move left in discrete steps
             for (float x = moveDistance; x > 0; x -= moveSpeed)
             {
-                papaTransform.position = startPosition + new Vector3(x, 0, 0);
-                yield return new WaitForSeconds(secondsPerStep); // Pause between each step
+                papaTransform.position = startPosition + new Vector3(x, yCoord, 0);
+                yield return new WaitForSeconds(secondsPerStep); 
             }
+            yCoord -= 1f;
+            papaTransform.position = new Vector3(papaTransform.position.x, yCoord, 0);
+            yield return new WaitForSeconds(secondsPerStep);
+
         }
     }
 
