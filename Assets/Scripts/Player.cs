@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     private void Enemy_onEnemyDied(int points)
     {
         //wanna know about points here
-        Debug.Log($"I know about dead Enemy: points:{points}");
+        //Debug.Log($"I know about dead Enemy: points:{points}");
         gm.editCurrentScore(points);
         //throw new System.NotImplementedException();
     }

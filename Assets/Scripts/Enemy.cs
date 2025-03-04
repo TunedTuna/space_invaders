@@ -9,6 +9,9 @@ public class Enemy : MonoBehaviour
     public delegate void EnemyDied(int points);
     public static event EnemyDied onEnemyDied;
 
+    public delegate void speedDeath();
+    public static event speedDeath onSpeedDeath;
+
     private void Start()
     {
         setScore();
@@ -20,6 +23,7 @@ public class Enemy : MonoBehaviour
         gameObject.SetActive(false);
 
         onEnemyDied?.Invoke(scoreGiven);
+        onSpeedDeath?.Invoke();
     }
     private void setScore()
     {

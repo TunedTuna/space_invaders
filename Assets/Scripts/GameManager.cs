@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
         hiscore_text.text ="Hi-Score\n"+ scoreData.highScore.ToString("D4");
         gameFinished = false;
         fin = false;
-
+        enemy.SetActive(false);
     }
 
     void Awake()
