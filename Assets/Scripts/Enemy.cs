@@ -12,14 +12,24 @@ public class Enemy : MonoBehaviour
     public delegate void speedDeath();
     public static event speedDeath onSpeedDeath;
 
+    //everyone shares the same death "animation"
+    //public Sprite deathSprite; // Assign the explosion sprite in Inspector
+    //private SpriteRenderer spriteRenderer;
+    //private Animator animator;
+
     private void Start()
     {
         setScore();
+        //spriteRenderer = GetComponent<SpriteRenderer>();
+        //animator = GetComponent<Animator>();
+       
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
-      Debug.Log("Ouch!");
+        Debug.Log("Ouch!");
         Destroy(collision.gameObject);
+        //animator.enabled = false;
+        //spriteRenderer.sprite = deathSprite;
         gameObject.SetActive(false);
 
         onEnemyDied?.Invoke(scoreGiven);
