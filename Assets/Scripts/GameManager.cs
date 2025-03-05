@@ -20,10 +20,11 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI hiscore_text;
     public GameObject enemy;    //demo ver
     public GameObject player;
+    public GameObject barricade_prefab;
     //scorestuff
     private int score;
     private string scoreFilePath;
-    private ScoreData scoreData= new ScoreData();
+    private ScoreData scoreData = new ScoreData();
 
     public static GameManager Instance; //idk what this does...
     private bool gameStarted = false; //to show "main menu"
@@ -34,7 +35,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        
+
         //at start, show the "main menu" until player presses any key
         //then hide, legend.
         //score is reset
@@ -44,7 +45,7 @@ public class GameManager : MonoBehaviour
 
         legend.SetActive(true);
         currentScore_text.text = "Score\n0000";
-        hiscore_text.text ="Hi-Score\n"+ scoreData.highScore.ToString("D4");
+        hiscore_text.text = "Hi-Score\n" + scoreData.highScore.ToString("D4");
         gameFinished = false;
         fin = false;
         enemy.SetActive(false);
@@ -60,14 +61,14 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) &&!gameStarted) 
+        if (Input.GetKeyDown(KeyCode.Space) && !gameStarted)
         {
             ////hide legend n start the game
             //legend.SetActive(false);
             //gameStarted = true;
             //Debug.Log("Game Started!");
             StartCoroutine(StartGameWithDelay());
-            
+
         }
         if (Input.GetKeyDown(KeyCode.R) && gameFinished)
         {
@@ -82,13 +83,13 @@ public class GameManager : MonoBehaviour
             fin = true;
             hiscoreManager();
             player.SetActive(false);
-            enemyAble() ; //turn off
+            enemyAble(); //turn off
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
             resetHiScore();
             editHiScore();
-            
+
         }
     }
 
@@ -103,6 +104,7 @@ public class GameManager : MonoBehaviour
         // Now, start the game
         gameStarted = true;
         enemyAble();// turn on
+        spawnBarricade();
         Debug.Log("Game Started!");
     }
 
@@ -122,18 +124,8 @@ public class GameManager : MonoBehaviour
         enemyAble();// turn on
     }
 
-    //score stuff ---------------------------------------------------------------
-    public void hiscoreManager()
-    {
-        //call this when player dies
-        
-        if (score > scoreData.highScore)
-        {
-            scoreData.highScore = score;
+    //score file stuff ---------------------------------------------------------------
 
-        }
-        editHiScore();
-    }
     public void LoadScores()
     {
         if (File.Exists(scoreFilePath))
@@ -154,14 +146,6 @@ public class GameManager : MonoBehaviour
         File.WriteAllText(scoreFilePath, json); // Save to file
         Debug.Log("High Score saved to: " + scoreFilePath);
     }
-    //text stuff-------------------------------------------------------------------------
-    public void editCurrentScore(int x)
-    {
-        //everytime an enemy dies
-        //event?
-        score += x;
-        currentScore_text.text = "Score\n" + score.ToString("D4");
-    }
     void editHiScore()
     {
         string json = JsonUtility.ToJson(scoreData, true); // Convert to JSON with formatting
@@ -169,6 +153,26 @@ public class GameManager : MonoBehaviour
         Debug.Log("High Score Saved: " + scoreData.highScore);
         hiscore_text.text = "Hi-Score\n" + scoreData.highScore.ToString("D4");
     }
+    //text stuff-------------------------------------------------------------------------
+    public void hiscoreManager()
+    {
+        //call this when player dies
+
+        if (score > scoreData.highScore)
+        {
+            scoreData.highScore = score;
+
+        }
+        editHiScore();
+    }
+    public void editCurrentScore(int x)
+    {
+        //everytime an enemy dies
+        //event?
+        score += x;
+        currentScore_text.text = "Score\n" + score.ToString("D4");
+    }
+
     void resetHiScore()
     {
         scoreData.highScore = 0;
@@ -184,4 +188,20 @@ public class GameManager : MonoBehaviour
     {
         return gameFinished;
     }
+
+    //barricade spawner?----------------------------------------------------------------------------------
+
+    void spawnBarricade()
+    {
+        float xCoord = -4.5f;
+        float yCoord = -2.7f;
+        //enemy = Instantiate(squid, new Vector3(j * widthPerEnemy, 1 * heightPerEnemy, 0), Quaternion.identity);
+        GameObject cover = null;
+        cover = Instantiate(barricade_prefab, new Vector3((xCoord), yCoord, 0), Quaternion.identity);
+  
+        cover = Instantiate(barricade_prefab, new Vector3(0, yCoord, 0), Quaternion.identity);
+        
+        cover = Instantiate(barricade_prefab, new Vector3((-xCoord), yCoord, 0), Quaternion.identity);
+    }
+
 }
