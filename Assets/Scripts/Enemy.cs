@@ -38,7 +38,7 @@ public class Enemy : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if ((collision.gameObject.CompareTag("Player")))
+        if ((collision.gameObject.CompareTag("PB")))
         {
             //if the player shot
             Debug.Log("Ouch!");
@@ -50,6 +50,7 @@ public class Enemy : MonoBehaviour
             onEnemyDied?.Invoke(scoreGiven);
             onSpeedDeath?.Invoke();
         }
+ 
 
 
     }

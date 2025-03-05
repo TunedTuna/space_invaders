@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 281261935798371015}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: shootingOffSet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 4988884264498715822}
   - component: {fileID: 5905503008050638937}
   - component: {fileID: -5161732876158118918}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Octopus
   m_TagString: Untagged
   m_Icon: {fileID: 0}

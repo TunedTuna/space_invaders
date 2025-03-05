@@ -38,8 +38,23 @@ public class Bullet : MonoBehaviour
         }
         
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Destroy(gameObject);
+    }
     public void setShooter(GameObject go)
     {
         shooter = go;
+        if (shooter.CompareTag("Player"))
+        {
+            gameObject.layer = LayerMask.NameToLayer("PlayerBullet");
+            gameObject.tag = "PB";
+
+        }
+        else
+        {
+            gameObject.layer = LayerMask.NameToLayer("EnemyBullet");
+            gameObject.tag = "EB";
+        }
     }
 }

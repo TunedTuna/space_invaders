@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7665342331964140029}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: shootingOffSet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 4988884264498715822}
   - component: {fileID: 1928574901646713765}
   - component: {fileID: 1107145287971930448}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Squid
   m_TagString: Squid
   m_Icon: {fileID: 0}

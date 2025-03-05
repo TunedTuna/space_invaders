@@ -68,7 +68,7 @@ public class Player : MonoBehaviour
             Destroy(collision.gameObject);
             //animator.enabled = false;
             //spriteRenderer.sprite = deathSprite;
-            gameObject.SetActive(false);
+            Destroy(gameObject);
         
 
 
