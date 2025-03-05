@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Enemy;
 
 public class Player : MonoBehaviour
 {
@@ -40,6 +41,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
+            shot.GetComponent<Bullet>().setShooter(gameObject);
             Debug.Log("Bang!");
 
             //Destroy(shot, 3f);
@@ -57,5 +59,18 @@ public class Player : MonoBehaviour
         //unsubscribe when we die
         gm.gameFinished = true;
         Enemy.onEnemyDied -= Enemy_onEnemyDied;
+    }
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+      
+            //if the player shot
+            Debug.Log("oof!");
+            Destroy(collision.gameObject);
+            //animator.enabled = false;
+            //spriteRenderer.sprite = deathSprite;
+            gameObject.SetActive(false);
+        
+
+
     }
 }

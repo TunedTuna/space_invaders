@@ -12,6 +12,10 @@ public class Enemy : MonoBehaviour
     public delegate void speedDeath();
     public static event speedDeath onSpeedDeath;
 
+    public GameObject bulletPrefab;
+    public Transform shottingOffset;
+    public float bulletCoolDown;
+
     //everyone shares the same death "animation"
     //public Sprite deathSprite; // Assign the explosion sprite in Inspector
     //private SpriteRenderer spriteRenderer;
@@ -20,20 +24,34 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
         setScore();
+        bulletCoolDown = 5f;
         //spriteRenderer = GetComponent<SpriteRenderer>();
         //animator = GetComponent<Animator>();
+        StartCoroutine(shootInterval());
        
+    }
+    private void Update()
+    {
+        //GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
+        //shot.GetComponent<Bullet>().setShooter(gameObject);
+        //Debug.Log("Bang!");
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("Ouch!");
-        Destroy(collision.gameObject);
-        //animator.enabled = false;
-        //spriteRenderer.sprite = deathSprite;
-        gameObject.SetActive(false);
+        if ((collision.gameObject.CompareTag("Player")))
+        {
+            //if the player shot
+            Debug.Log("Ouch!");
+            Destroy(collision.gameObject);
+            //animator.enabled = false;
+            //spriteRenderer.sprite = deathSprite;
+            gameObject.SetActive(false);
 
-        onEnemyDied?.Invoke(scoreGiven);
-        onSpeedDeath?.Invoke();
+            onEnemyDied?.Invoke(scoreGiven);
+            onSpeedDeath?.Invoke();
+        }
+
+
     }
     private void setScore()
     {
@@ -43,6 +61,17 @@ public class Enemy : MonoBehaviour
             case "Squid": scoreGiven = 30; break;
             case "Mystery": scoreGiven = 100; break;
             default: scoreGiven = 10; break; // Default score
+        }
+    }
+
+    IEnumerator shootInterval()
+    {
+        while (true) 
+        {
+            GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
+            shot.GetComponent<Bullet>().setShooter(gameObject);
+            Debug.Log("Bang!");
+            yield return new WaitForSeconds(bulletCoolDown);
         }
     }
 }
