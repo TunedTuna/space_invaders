@@ -8,6 +8,8 @@ TagManager:
   - Squid
   - Mystery
   - Playa
+  - PB
+  - EB
   layers:
   - Default
   - TransparentFX
@@ -16,10 +18,10 @@ TagManager:
   - Water
   - UI
   - Bullet
-  - 
-  - 
-  - 
-  - 
+  - PlayerLayer
+  - EnemyLayer
+  - PlayerBullet
+  - EnemyBullet
   - 
   - 
   - 

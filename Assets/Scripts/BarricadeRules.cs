@@ -35,11 +35,11 @@ public class BarricadeRules : MonoBehaviour
                 sr.flipX=true;
             }
             sr.sprite = dmg_sprite;
-            Debug.Log("still some fight left");
+            //Debug.Log("still some fight left");
         }
         else
         {
-            Debug.Log("Bye shield...");
+            //Debug.Log("Bye shield...");
             Destroy(gameObject);
         }
 

@@ -28,6 +28,7 @@ public class Enemy : MonoBehaviour
         //spriteRenderer = GetComponent<SpriteRenderer>();
         //animator = GetComponent<Animator>();
         StartCoroutine(shootInterval());
+     
        
     }
     private void Update()
@@ -71,7 +72,7 @@ public class Enemy : MonoBehaviour
         {
             GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
             shot.GetComponent<Bullet>().setShooter(gameObject);
-            Debug.Log("Bang!");
+            //Debug.Log("Bang!");
             yield return new WaitForSeconds(bulletCoolDown);
         }
     }

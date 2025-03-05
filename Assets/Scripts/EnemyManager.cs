@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
@@ -33,6 +34,8 @@ public class EnemyManager : MonoBehaviour
     public GameObject player;
     private bool gameOver; //this script acts weird when trying to get GM's "gameFinished"
 
+    public TextMeshProUGUI invadedText;
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -48,6 +51,7 @@ public class EnemyManager : MonoBehaviour
         speedInc = 1f / enemyRemaining;
         yCoord = 0f;
         gameOver = false;
+        invadedText.enabled = false;
     }
 
     private void Enemy_onSpeedDeath()
@@ -60,7 +64,7 @@ public class EnemyManager : MonoBehaviour
         {
             secondsPerStep -= speedInc;
         }
-        Debug.Log($"speed boost!, {speedInc}");
+        //Debug.Log($"speed boost!, {speedInc}");
     }
 
     void Update()
@@ -82,6 +86,11 @@ public class EnemyManager : MonoBehaviour
             deleteFormation();
             formation();
             
+        }
+        if (enemyRemaining == 0)
+        {
+            gm.gameFinished = true;
+            gameObject.SetActive(false);
         }
 
 
@@ -171,6 +180,8 @@ public class EnemyManager : MonoBehaviour
                 {
                     gm.gameFinished = true;
                     Debug.Log("You've been invaded by " + enemy.name + "!");
+                    invadedText.text = $"You've been invaded by {enemy.name}!";
+                    invadedText.enabled = true;
                     gameOver = true;
                     break;
                 }

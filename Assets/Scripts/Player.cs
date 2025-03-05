@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
         {
             GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
             shot.GetComponent<Bullet>().setShooter(gameObject);
-            Debug.Log("Bang!");
+            //Debug.Log("Bang!");
 
             //Destroy(shot, 3f);
 
@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
     {
       
             //if the player shot
-            Debug.Log("oof!");
+            //Debug.Log("oof!");
             Destroy(collision.gameObject);
             //animator.enabled = false;
             //spriteRenderer.sprite = deathSprite;
