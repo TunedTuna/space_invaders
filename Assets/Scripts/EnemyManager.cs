@@ -82,6 +82,7 @@ public class EnemyManager : MonoBehaviour
             //StartCoroutine(MoveParent());
             enemyRemaining = numEnemiesAcross * 3;
             speedInc = 1f / enemyRemaining;
+            secondsPerStep = 1f;
             yCoord = 0f;
             deleteFormation();
             formation();
