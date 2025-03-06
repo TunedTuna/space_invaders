@@ -15,20 +15,26 @@ public class Enemy : MonoBehaviour
     public GameObject bulletPrefab;
     public Transform shottingOffset;
     public float bulletCoolDown;
-
+    public Animator animator;
+    public EnemyManager em;
+    
     //everyone shares the same death "animation"
     //public Sprite deathSprite; // Assign the explosion sprite in Inspector
     //private SpriteRenderer spriteRenderer;
     //private Animator animator;
 
+
     private void Start()
     {
         setScore();
         bulletCoolDown = 5f;
+        animator = GetComponent<Animator>();
         //spriteRenderer = GetComponent<SpriteRenderer>();
         //animator = GetComponent<Animator>();
+        em = GetComponent<EnemyManager>();
         StartCoroutine(shootInterval());
-     
+
+        //TODO make an event to ping that an enemy has fired so not everyone fires at once. then IEnumerator would most likely be replaced :0
        
     }
     private void Update()
@@ -42,14 +48,15 @@ public class Enemy : MonoBehaviour
         if ((collision.gameObject.CompareTag("PB")))
         {
             //if the player shot
-            Debug.Log("Ouch!");
+          
+            animator.SetBool("isDead", true);
             Destroy(collision.gameObject);
-            //animator.enabled = false;
-            //spriteRenderer.sprite = deathSprite;
-            gameObject.SetActive(false);
-
             onEnemyDied?.Invoke(scoreGiven);
             onSpeedDeath?.Invoke();
+
+            bulletCoolDown = 10f;
+            StartCoroutine(DestroyAfterDelay(0.5f));
+
         }
  
 
@@ -75,5 +82,13 @@ public class Enemy : MonoBehaviour
             //Debug.Log("Bang!");
             yield return new WaitForSeconds(bulletCoolDown);
         }
+    }
+    private IEnumerator DestroyAfterDelay(float delay)
+    {
+      
+        yield return new WaitForSeconds(delay);
+
+        
+        gameObject.SetActive(false);
     }
 }
