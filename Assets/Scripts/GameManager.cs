@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class ScoreData
@@ -89,6 +90,7 @@ public class GameManager : MonoBehaviour
             hiscoreManager();
             player.SetActive(false);
             enemyAble(); //turn off
+            SceneManager.LoadScene("Credits");
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {

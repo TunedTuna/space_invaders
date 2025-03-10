@@ -16,7 +16,7 @@ public class Enemy : MonoBehaviour
     public Transform shottingOffset;
     public float bulletCoolDown;
     public Animator animator;
-    public EnemyManager em;
+    //public EnemyManager em;
     
     //everyone shares the same death "animation"
     //public Sprite deathSprite; // Assign the explosion sprite in Inspector
@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour
         animator = GetComponent<Animator>();
         //spriteRenderer = GetComponent<SpriteRenderer>();
         //animator = GetComponent<Animator>();
-        em = GetComponent<EnemyManager>();
+        //em = GetComponent<EnemyManager>();
         StartCoroutine(shootInterval());
 
         //TODO make an event to ping that an enemy has fired so not everyone fires at once. then IEnumerator would most likely be replaced :0
