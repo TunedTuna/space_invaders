@@ -357,16 +357,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Game Design & Programming - Me
-
-    Art & Animation - [STOLEN]
-
-    Music
-    & Sound - [STOLEN]
-
-    Testing & Debug - Myself
-
-    Special Thanks - Eye'
+  m_text: "Game Design & Programming - Me\nArt & Animation - [STOLEN]\nMusic & Sound
+    - \n\tImperial_Dawn_Audio\n\tB.G.M\t\t\n\tDustyroom\nTesting & Debug - Myself\nSpecial
+    Thanks - I\n\t(pls don't sue me)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

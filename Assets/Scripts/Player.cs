@@ -21,7 +21,8 @@ public class Player : MonoBehaviour
     public bool isDead;
 
     [Header("noise")]
-    public AudioClip noise;
+    public AudioClip deathBoom;
+    public AudioClip pew;
     public Animator animator;
 
     private void Start()
@@ -48,8 +49,12 @@ public class Player : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            AudioSource audioSrc= gameObject.GetComponent<AudioSource>();
+            audioSrc.clip = pew;
+            audioSrc.Play();
             GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
             shot.GetComponent<Bullet>().setShooter(gameObject);
+
             //Debug.Log("Bang!");
 
             //Destroy(shot, 3f);
@@ -75,7 +80,7 @@ public class Player : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         AudioSource audioSrc =GetComponent<AudioSource>();
-        audioSrc.clip = noise;
+        audioSrc.clip = deathBoom;
         audioSrc.Play();
 
         //if the player shot

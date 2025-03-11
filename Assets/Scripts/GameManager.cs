@@ -19,7 +19,6 @@ public class GameManager : MonoBehaviour
     //public GameObject legend;
     public TextMeshProUGUI currentScore_text;
     public TextMeshProUGUI hiscore_text;
-    public TextMeshProUGUI fin_text;
     public GameObject enemy;    //demo ver
     public GameObject player;
     public GameObject barricade_prefab;
@@ -36,6 +35,9 @@ public class GameManager : MonoBehaviour
     public EnemyManager em;
     public TextMeshProUGUI invadedText;
 
+    public AudioSource audioSource;
+    public AudioClip bg;
+
     void Start()
     {
 
@@ -45,11 +47,13 @@ public class GameManager : MonoBehaviour
         //keep hi score
         scoreFilePath = Application.persistentDataPath + "highscore.json";
         LoadScores();
+        audioSource= GetComponent<AudioSource>();
+        audioSource.clip = bg;
+        audioSource.Play();
 
         //legend.SetActive(true);
         currentScore_text.text = "Score\n0000";
         hiscore_text.text = "Hi-Score\n" + scoreData.highScore.ToString("D4");
-        fin_text.enabled = false;
         gameFinished = false;
         fin = false;
         invadedText.enabled = false;
@@ -63,6 +67,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(StartGameWithDelay());
         if (Instance == null)
             Instance = this;
+        invadedText.enabled = false;
 
     }
 
@@ -88,7 +93,6 @@ public class GameManager : MonoBehaviour
         if (gameFinished && !fin)
         {
             fin = true;
-            fin_text.enabled = true;
             hiscoreManager();
             //player.SetActive(false);
             enemyAble(); //turn off
@@ -134,7 +138,6 @@ public class GameManager : MonoBehaviour
         score = 0;
         //player.SetActive(true);
         gameFinished = false;
-        fin_text.enabled = false;
         fin = false;
         enemyAble();// turn on
     }
