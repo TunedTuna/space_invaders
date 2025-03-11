@@ -16,7 +16,7 @@ public class ScoreData
 public class GameManager : MonoBehaviour
 {
 
-    public GameObject legend;
+    //public GameObject legend;
     public TextMeshProUGUI currentScore_text;
     public TextMeshProUGUI hiscore_text;
     public TextMeshProUGUI fin_text;
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
         scoreFilePath = Application.persistentDataPath + "highscore.json";
         LoadScores();
 
-        legend.SetActive(true);
+        //legend.SetActive(true);
         currentScore_text.text = "Score\n0000";
         hiscore_text.text = "Hi-Score\n" + scoreData.highScore.ToString("D4");
         fin_text.enabled = false;
@@ -60,21 +60,23 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        StartCoroutine(StartGameWithDelay());
         if (Instance == null)
             Instance = this;
+
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !gameStarted)
-        {
-            ////hide legend n start the game
-            //legend.SetActive(false);
-            //gameStarted = true;
-            //Debug.Log("Game Started!");
-            StartCoroutine(StartGameWithDelay());
+        //if (Input.GetKeyDown(KeyCode.Space) && !gameStarted)
+        //{
+        //    ////hide legend n start the game
+        //    //legend.SetActive(false);
+        //    //gameStarted = true;
+        //    //Debug.Log("Game Started!");
+        //    StartCoroutine(StartGameWithDelay());
 
-        }
+        //}
         if (Input.GetKeyDown(KeyCode.R) && gameFinished)
         {
             restartGame();
@@ -88,9 +90,9 @@ public class GameManager : MonoBehaviour
             fin = true;
             fin_text.enabled = true;
             hiscoreManager();
-            player.SetActive(false);
+            //player.SetActive(false);
             enemyAble(); //turn off
-            SceneManager.LoadScene("Credits");
+            StartCoroutine(creditsCountdown());
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -103,7 +105,7 @@ public class GameManager : MonoBehaviour
     IEnumerator StartGameWithDelay()
     {
         // Hide the legend and wait for 3 seconds
-        legend.SetActive(false);
+        //legend.SetActive(false);
 
         // Wait for 3 seconds
         yield return new WaitForSeconds(0.5f);
@@ -113,6 +115,11 @@ public class GameManager : MonoBehaviour
         enemyAble();// turn on
         spawnBarricade();
         Debug.Log("Game Started!");
+    }
+    IEnumerator creditsCountdown()
+    {
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene("Credits");
     }
 
     public bool IsGameStarted()
@@ -125,7 +132,7 @@ public class GameManager : MonoBehaviour
     {
         //reset enemy, current score,player position (0,-3,0)
         score = 0;
-        player.SetActive(true);
+        //player.SetActive(true);
         gameFinished = false;
         fin_text.enabled = false;
         fin = false;

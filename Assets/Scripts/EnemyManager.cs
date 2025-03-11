@@ -18,6 +18,11 @@ public class EnemyManager : MonoBehaviour
     public GameObject octopus; //a
     public GameObject crab; //b
     public GameObject squid; //c
+    [Header("mystery Prefab")]
+    public GameObject mystery;//d
+    public GameObject tempMystery;
+    public bool mysteryExist;
+    public Transform mysteryTransform;
 
     [Header("Enemy Parent")]
     public Transform papaTransform;
@@ -52,6 +57,7 @@ public class EnemyManager : MonoBehaviour
         yCoord = 0f;
         gameOver = false;
         invadedText.enabled = false;
+        mysteryExist = false;
     }
 
     private void Enemy_onSpeedDeath()
@@ -93,6 +99,15 @@ public class EnemyManager : MonoBehaviour
             gm.gameFinished = true;
             gameObject.SetActive(false);
         }
+        if (!mysteryExist)
+        {
+            spawnMystery();
+            StartCoroutine(moveMystery());
+
+
+
+        }
+
 
 
     }
@@ -169,6 +184,36 @@ public class EnemyManager : MonoBehaviour
 
         }
     }
+    IEnumerator moveMystery()
+    {
+        float yCoord = 4;
+        float mysteryDist = moveDistance * 2;
+        Transform start = mysteryTransform;
+        for (int i = 0; i < 3; i++)
+        {
+
+            for (float x = start.position.x; x < moveDistance; x += moveSpeed)
+            {
+                //move rigght
+                tempMystery.transform.position = startPosition + new Vector3(x, yCoord, 0);
+                yield return new WaitForSeconds(0.5f);
+
+            }
+            //chill at end  
+            yield return new WaitForSeconds(2f);
+            for (float x =  moveDistance; x >-11f; x -= moveSpeed)
+            {
+                // move left
+                tempMystery.transform.position = startPosition + new Vector3(x, yCoord, 0);
+                yield return new WaitForSeconds(0.5f);
+            }
+            //chill at end  
+            //mysteryExist = false;
+            yield return new WaitForSeconds(2f);
+        }
+        
+        
+    }
     void checkInvasion()
     {
         for (int i = 0; i < papaTransform.childCount; i++)
@@ -189,6 +234,17 @@ public class EnemyManager : MonoBehaviour
             }
         }
     }
+    //mystery---------------------------------------------------------------------------------------
+    void spawnMystery()
+    {
+        ///-11.5, 4, 0
+        ///
+        mysteryExist = true;
+        tempMystery = Instantiate(mystery, new Vector3(-11,4, 0), Quaternion.identity);
+        mysteryTransform = tempMystery.transform;
+        
+    }
+
 
 
 

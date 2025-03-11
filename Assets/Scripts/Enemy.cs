@@ -18,6 +18,7 @@ public class Enemy : MonoBehaviour
     public Animator animator;
     //public EnemyManager em;
     
+    
     //everyone shares the same death "animation"
     //public Sprite deathSprite; // Assign the explosion sprite in Inspector
     //private SpriteRenderer spriteRenderer;
@@ -27,15 +28,15 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
         setScore();
-        bulletCoolDown = 5f;
+        //bulletCoolDown = 5f;
         animator = GetComponent<Animator>();
         //spriteRenderer = GetComponent<SpriteRenderer>();
         //animator = GetComponent<Animator>();
         //em = GetComponent<EnemyManager>();
-        StartCoroutine(shootInterval());
+        StartCoroutine(shootCountDown());
 
         //TODO make an event to ping that an enemy has fired so not everyone fires at once. then IEnumerator would most likely be replaced :0
-       
+
     }
     private void Update()
     {
@@ -66,10 +67,10 @@ public class Enemy : MonoBehaviour
     {
         switch (gameObject.tag)
         {
-            case "Crab": scoreGiven = 20; break;
-            case "Squid": scoreGiven = 30; break;
-            case "Mystery": scoreGiven = 100; break;
-            default: scoreGiven = 10; break; // Default score
+            case "Crab": scoreGiven = 20; bulletCoolDown = 5f; break;
+            case "Squid": scoreGiven = 30; bulletCoolDown = 3f; break;
+            case "Mystery": scoreGiven = 100; bulletCoolDown = 2f; break;
+            default: scoreGiven = 10; bulletCoolDown = 4f; break; // Default score
         }
     }
 
@@ -82,6 +83,11 @@ public class Enemy : MonoBehaviour
             //Debug.Log("Bang!");
             yield return new WaitForSeconds(bulletCoolDown);
         }
+    }
+    IEnumerator shootCountDown()
+    {
+        yield return new WaitForSeconds(3f);
+        StartCoroutine(shootInterval());
     }
     private IEnumerator DestroyAfterDelay(float delay)
     {
