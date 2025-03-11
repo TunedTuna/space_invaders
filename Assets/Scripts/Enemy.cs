@@ -49,7 +49,6 @@ public class Enemy : MonoBehaviour
         if ((collision.gameObject.CompareTag("PB")))
         {
             //if the player shot
-          
             animator.SetBool("isDead", true);
             Destroy(collision.gameObject);
             onEnemyDied?.Invoke(scoreGiven);
