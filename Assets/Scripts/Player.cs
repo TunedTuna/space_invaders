@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 using static Enemy;
 
 public class Player : MonoBehaviour
@@ -17,11 +18,18 @@ public class Player : MonoBehaviour
     public float speed;
     //public float collisionBallSpeedUp = 1.5f;
     public string inputAxis;
+    public bool isDead;
+
+    [Header("noise")]
+    public AudioClip noise;
+    public Animator animator;
 
     private void Start()
     {
         //subsribe
         Enemy.onEnemyDied += Enemy_onEnemyDied;
+        animator= GetComponent<Animator>();
+        isDead = false;
     }
 
     private void Enemy_onEnemyDied(int points)
@@ -47,12 +55,16 @@ public class Player : MonoBehaviour
             //Destroy(shot, 3f);
 
         }
+        if (!isDead)
+        {
+            float direction = Input.GetAxis(inputAxis);
+            Vector3 newPosition = transform.position + new Vector3(direction, 0, 0) * speed * Time.deltaTime;
+            newPosition.x = Mathf.Clamp(newPosition.x, minTravelHeight, maxTravelHeight);
 
-        float direction = Input.GetAxis(inputAxis);
-        Vector3 newPosition = transform.position + new Vector3(direction, 0, 0) * speed * Time.deltaTime;
-        newPosition.x = Mathf.Clamp(newPosition.x, minTravelHeight, maxTravelHeight);
+            transform.position = newPosition;
+        }
 
-        transform.position = newPosition;
+ 
     }
     private void OnDestroy()
     {
@@ -62,15 +74,27 @@ public class Player : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
-      
-            //if the player shot
-            //Debug.Log("oof!");
+        AudioSource audioSrc =GetComponent<AudioSource>();
+        audioSrc.clip = noise;
+        audioSrc.Play();
+
+        //if the player shot
+        //Debug.Log("oof!");
+        isDead = true;
             Destroy(collision.gameObject);
-            //animator.enabled = false;
-            //spriteRenderer.sprite = deathSprite;
-            Destroy(gameObject);
+        //animator.enabled = false;
+        //spriteRenderer.sprite = deathSprite;
+        animator.SetBool("isDead", true);
+        
+        StartCoroutine(waitToKill());
         
 
+
+    }
+    IEnumerator waitToKill()
+    {
+        yield return new WaitForSeconds(2f);
+        Destroy(gameObject);
 
     }
 }
