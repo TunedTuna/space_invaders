@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     public string inputAxis;
     public bool isDead;
 
+    public GameObject particles;
     [Header("noise")]
     public AudioClip deathBoom;
     public AudioClip pew;
@@ -62,11 +63,24 @@ public class Player : MonoBehaviour
         }
         if (!isDead)
         {
+           
             float direction = Input.GetAxis(inputAxis);
             Vector3 newPosition = transform.position + new Vector3(direction, 0, 0) * speed * Time.deltaTime;
             newPosition.x = Mathf.Clamp(newPosition.x, minTravelHeight, maxTravelHeight);
 
             transform.position = newPosition;
+            //if move left, rotate particle system < 90
+            
+            //if move right rotates particles system>90
+            if (direction > 0)
+            {
+                particles.transform.rotation = Quaternion.Euler(30, -90, -90);
+            }
+            else if (direction < 0)
+            {
+                particles.transform.rotation = Quaternion.Euler(150, -90, -90);
+                
+            }
         }
 
  
@@ -74,6 +88,7 @@ public class Player : MonoBehaviour
     private void OnDestroy()
     {
         //unsubscribe when we die
+        particles.gameObject.SetActive(false);
         gm.gameFinished = true;
         Enemy.onEnemyDied -= Enemy_onEnemyDied;
     }

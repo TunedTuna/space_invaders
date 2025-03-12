@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -58,6 +59,7 @@ public class EnemyManager : MonoBehaviour
         gameOver = false;
         invadedText.enabled = false;
         mysteryExist = false;
+        Debug.Log("Enemyremaining: " + enemyRemaining);
     }
 
     private void Enemy_onSpeedDeath()
@@ -70,6 +72,12 @@ public class EnemyManager : MonoBehaviour
         {
             secondsPerStep -= speedInc;
         }
+
+        enemyRemaining--;
+        if (enemyRemaining <= 0) 
+        { enemyRemaining = 0; }
+
+        Debug.Log("Enemyremaining: "+enemyRemaining);
         //Debug.Log($"speed boost!, {speedInc}");
     }
 
@@ -94,11 +102,7 @@ public class EnemyManager : MonoBehaviour
             formation();
             
         }
-        if (enemyRemaining == 0)
-        {
-            gm.gameFinished = true;
-            gameObject.SetActive(false);
-        }
+
         if (!mysteryExist)
         {
             spawnMystery();
@@ -107,9 +111,24 @@ public class EnemyManager : MonoBehaviour
 
 
         }
+        if(enemyRemaining <= 0)
+        {
+            //gm.gameFinished = true;
+            //gameObject.SetActive(false);
+            invadedText.text = "Invasion stopped!";
+            Debug.Log("U win!");
+            invadedText.color = Color.green;
+            invadedText.enabled = true;
+            StartCoroutine(creditsCountdown());
+        }
 
 
 
+    }
+    IEnumerator creditsCountdown()
+    {
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene("Credits");
     }
 
     void deleteFormation()
@@ -228,6 +247,7 @@ public class EnemyManager : MonoBehaviour
                     Debug.Log("You've been invaded by " + enemy.name + "!");
                     invadedText.text = $"You've been invaded by {enemy.name}!";
                     invadedText.enabled = true;
+
                     gameOver = true;
                     break;
                 }

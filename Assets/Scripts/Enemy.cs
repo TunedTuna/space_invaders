@@ -66,8 +66,9 @@ public class Enemy : MonoBehaviour
                 isDeado=true;
                 onEnemyDied?.Invoke(scoreGiven);
                 onSpeedDeath?.Invoke();
-                audioSrc.clip = deathBoom;
-                audioSrc.Play();
+                audioSrc.PlayOneShot(deathBoom);
+                //audioSrc.Play();
+                gameObject.layer = 11;
             }
             
             StopAllCoroutines();

@@ -93,6 +93,9 @@ public class GameManager : MonoBehaviour
         if (gameFinished && !fin)
         {
             fin = true;
+            invadedText.text = "You died :(\n" +
+                "Game Over";
+            invadedText.enabled=true;
             hiscoreManager();
             //player.SetActive(false);
             enemyAble(); //turn off
