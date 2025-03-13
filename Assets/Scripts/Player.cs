@@ -50,11 +50,10 @@ public class Player : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            AudioSource audioSrc= gameObject.GetComponent<AudioSource>();
-            audioSrc.clip = pew;
-            audioSrc.Play();
-            GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
-            shot.GetComponent<Bullet>().setShooter(gameObject);
+            StartCoroutine(shootAni());
+            
+            
+           
 
             //Debug.Log("Bang!");
 
@@ -116,5 +115,16 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(2f);
         Destroy(gameObject);
 
+    }
+    IEnumerator shootAni()
+    {
+        animator.SetBool("isShoot", true);
+        AudioSource audioSrc = gameObject.GetComponent<AudioSource>();
+        audioSrc.clip = pew;
+        audioSrc.Play();
+        GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
+        shot.GetComponent<Bullet>().setShooter(gameObject);
+        yield return new WaitForSeconds(4f);
+        animator.SetBool("isShoot", false);
     }
 }
