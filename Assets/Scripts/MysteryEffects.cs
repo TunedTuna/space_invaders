@@ -53,4 +53,8 @@ public class MysteryEffects : MonoBehaviour
         yield return new WaitForSeconds(4f);
         animator.SetBool("isShoot", false);
     }
+    private void OnDestroy()
+    {
+        Enemy.onShotsFired -= Enemy_onShotsFired;
+    }
 }
