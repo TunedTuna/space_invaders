@@ -13,6 +13,9 @@ public class Enemy : MonoBehaviour
     public static event speedDeath onSpeedDeath;
     public bool isDeado;
 
+    public delegate void shotsFired();
+    public static event shotsFired onShotsFired;
+
     public GameObject bulletPrefab;
     public Transform shottingOffset;
     public float bulletCoolDown;
@@ -85,7 +88,7 @@ public class Enemy : MonoBehaviour
         {
             case "Crab": scoreGiven = 20; bulletCoolDown = 5f; break;
             case "Squid": scoreGiven = 30; bulletCoolDown = 3f; break;
-            case "Mystery": scoreGiven = 100; bulletCoolDown = 2f; break;
+            case "Mystery": scoreGiven = 100; bulletCoolDown = 6f; break;
             default: scoreGiven = 10; bulletCoolDown = 4f; break; // Default score
         }
     }
@@ -94,6 +97,7 @@ public class Enemy : MonoBehaviour
     {
         while (true) 
         {
+            onShotsFired?.Invoke();
             audioSrc.clip = pew;
             audioSrc.Play();
             GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);

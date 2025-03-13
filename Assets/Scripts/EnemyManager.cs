@@ -210,7 +210,7 @@ public class EnemyManager : MonoBehaviour
         Transform start = mysteryTransform;
         for (int i = 0; i < 3; i++)
         {
-
+            tempMystery.gameObject.GetComponent<SpriteRenderer>().flipX = true;
             for (float x = start.position.x; x < moveDistance; x += moveSpeed)
             {
                 //move rigght
@@ -220,6 +220,7 @@ public class EnemyManager : MonoBehaviour
             }
             //chill at end  
             yield return new WaitForSeconds(2f);
+            tempMystery.gameObject.GetComponent<SpriteRenderer>().flipX = false;
             for (float x =  moveDistance; x >-11f; x -= moveSpeed)
             {
                 // move left
