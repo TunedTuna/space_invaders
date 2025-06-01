@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class ScoreData
@@ -15,7 +16,7 @@ public class ScoreData
 public class GameManager : MonoBehaviour
 {
 
-    public GameObject legend;
+    //public GameObject legend;
     public TextMeshProUGUI currentScore_text;
     public TextMeshProUGUI hiscore_text;
     public GameObject enemy;    //demo ver
@@ -32,6 +33,10 @@ public class GameManager : MonoBehaviour
     public bool fin;    //stop Update from spamming score change
 
     public EnemyManager em;
+    public TextMeshProUGUI invadedText;
+
+    public AudioSource audioSource;
+    public AudioClip bg;
 
     void Start()
     {
@@ -42,12 +47,16 @@ public class GameManager : MonoBehaviour
         //keep hi score
         scoreFilePath = Application.persistentDataPath + "highscore.json";
         LoadScores();
+        audioSource= GetComponent<AudioSource>();
+        audioSource.clip = bg;
+        audioSource.Play();
 
-        legend.SetActive(true);
+        //legend.SetActive(true);
         currentScore_text.text = "Score\n0000";
         hiscore_text.text = "Hi-Score\n" + scoreData.highScore.ToString("D4");
         gameFinished = false;
         fin = false;
+        invadedText.enabled = false;
         enemy.SetActive(false);
         enemyAble();//turn off
 
@@ -55,21 +64,24 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        StartCoroutine(StartGameWithDelay());
         if (Instance == null)
             Instance = this;
+        invadedText.enabled = false;
+
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !gameStarted)
-        {
-            ////hide legend n start the game
-            //legend.SetActive(false);
-            //gameStarted = true;
-            //Debug.Log("Game Started!");
-            StartCoroutine(StartGameWithDelay());
+        //if (Input.GetKeyDown(KeyCode.Space) && !gameStarted)
+        //{
+        //    ////hide legend n start the game
+        //    //legend.SetActive(false);
+        //    //gameStarted = true;
+        //    //Debug.Log("Game Started!");
+        //    StartCoroutine(StartGameWithDelay());
 
-        }
+        //}
         if (Input.GetKeyDown(KeyCode.R) && gameFinished)
         {
             restartGame();
@@ -81,9 +93,13 @@ public class GameManager : MonoBehaviour
         if (gameFinished && !fin)
         {
             fin = true;
+            invadedText.text = "You died :(\n" +
+                "Game Over";
+            invadedText.enabled=true;
             hiscoreManager();
-            player.SetActive(false);
+            //player.SetActive(false);
             enemyAble(); //turn off
+            StartCoroutine(creditsCountdown());
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -96,7 +112,7 @@ public class GameManager : MonoBehaviour
     IEnumerator StartGameWithDelay()
     {
         // Hide the legend and wait for 3 seconds
-        legend.SetActive(false);
+        //legend.SetActive(false);
 
         // Wait for 3 seconds
         yield return new WaitForSeconds(0.5f);
@@ -106,6 +122,11 @@ public class GameManager : MonoBehaviour
         enemyAble();// turn on
         spawnBarricade();
         Debug.Log("Game Started!");
+    }
+    IEnumerator creditsCountdown()
+    {
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene("Credits");
     }
 
     public bool IsGameStarted()
@@ -118,7 +139,7 @@ public class GameManager : MonoBehaviour
     {
         //reset enemy, current score,player position (0,-3,0)
         score = 0;
-        player.SetActive(true);
+        //player.SetActive(true);
         gameFinished = false;
         fin = false;
         enemyAble();// turn on
@@ -181,7 +202,7 @@ public class GameManager : MonoBehaviour
     void enemyAble()
     {
         em.enabled = !em.enabled;
-        Debug.Log($"Script is: {em.enabled}");
+        //Debug.Log($"Script is: {em.enabled}");
     }
     //a getter just cus-------------------------------------------
     public bool getGameFinished()

@@ -28,13 +28,13 @@ public class Bullet : MonoBehaviour
         if (shooter.CompareTag("Player"))
         {
             myRigidbody2D.linearVelocity = Vector2.up * speed;
-            Debug.Log("Wwweeeeee");
+            //Debug.Log("Wwweeeeee");
         }
         else
         {
             myRenderer.material= mats;
             myRigidbody2D.linearVelocity = Vector2.down * speed;
-            Debug.Log("Wwweeeeee");
+            //Debug.Log("Wwweeeeee");
         }
         
     }

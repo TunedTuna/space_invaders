@@ -1,5 +1,7 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -17,6 +19,11 @@ public class EnemyManager : MonoBehaviour
     public GameObject octopus; //a
     public GameObject crab; //b
     public GameObject squid; //c
+    [Header("mystery Prefab")]
+    public GameObject mystery;//d
+    public GameObject tempMystery;
+    public bool mysteryExist;
+    public Transform mysteryTransform;
 
     [Header("Enemy Parent")]
     public Transform papaTransform;
@@ -33,6 +40,8 @@ public class EnemyManager : MonoBehaviour
     public GameObject player;
     private bool gameOver; //this script acts weird when trying to get GM's "gameFinished"
 
+    public TextMeshProUGUI invadedText;
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -48,6 +57,9 @@ public class EnemyManager : MonoBehaviour
         speedInc = 1f / enemyRemaining;
         yCoord = 0f;
         gameOver = false;
+        invadedText.enabled = false;
+        mysteryExist = false;
+        Debug.Log("Enemyremaining: " + enemyRemaining);
     }
 
     private void Enemy_onSpeedDeath()
@@ -60,7 +72,13 @@ public class EnemyManager : MonoBehaviour
         {
             secondsPerStep -= speedInc;
         }
-        Debug.Log($"speed boost!, {speedInc}");
+
+        enemyRemaining--;
+        if (enemyRemaining <= 0) 
+        { enemyRemaining = 0; }
+
+        Debug.Log("Enemyremaining: "+enemyRemaining);
+        //Debug.Log($"speed boost!, {speedInc}");
     }
 
     void Update()
@@ -78,13 +96,39 @@ public class EnemyManager : MonoBehaviour
             //StartCoroutine(MoveParent());
             enemyRemaining = numEnemiesAcross * 3;
             speedInc = 1f / enemyRemaining;
+            secondsPerStep = 1f;
             yCoord = 0f;
             deleteFormation();
             formation();
             
         }
 
+        if (!mysteryExist)
+        {
+            spawnMystery();
+            StartCoroutine(moveMystery());
 
+
+
+        }
+        if(enemyRemaining <= 0)
+        {
+            //gm.gameFinished = true;
+            //gameObject.SetActive(false);
+            invadedText.text = "Invasion stopped!";
+            Debug.Log("U win!");
+            invadedText.color = Color.green;
+            invadedText.enabled = true;
+            StartCoroutine(creditsCountdown());
+        }
+
+
+
+    }
+    IEnumerator creditsCountdown()
+    {
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene("Credits");
     }
 
     void deleteFormation()
@@ -159,6 +203,37 @@ public class EnemyManager : MonoBehaviour
 
         }
     }
+    IEnumerator moveMystery()
+    {
+        float yCoord = 4;
+        float mysteryDist = moveDistance * 2;
+        Transform start = mysteryTransform;
+        for (int i = 0; i < 3; i++)
+        {
+            tempMystery.gameObject.GetComponent<SpriteRenderer>().flipX = true;
+            for (float x = start.position.x; x < moveDistance; x += moveSpeed)
+            {
+                //move rigght
+                tempMystery.transform.position = startPosition + new Vector3(x, yCoord, 0);
+                yield return new WaitForSeconds(0.5f);
+
+            }
+            //chill at end  
+            yield return new WaitForSeconds(2f);
+            tempMystery.gameObject.GetComponent<SpriteRenderer>().flipX = false;
+            for (float x =  moveDistance; x >-11f; x -= moveSpeed)
+            {
+                // move left
+                tempMystery.transform.position = startPosition + new Vector3(x, yCoord, 0);
+                yield return new WaitForSeconds(0.5f);
+            }
+            //chill at end  
+            //mysteryExist = false;
+            yield return new WaitForSeconds(2f);
+        }
+        
+        
+    }
     void checkInvasion()
     {
         for (int i = 0; i < papaTransform.childCount; i++)
@@ -171,12 +246,26 @@ public class EnemyManager : MonoBehaviour
                 {
                     gm.gameFinished = true;
                     Debug.Log("You've been invaded by " + enemy.name + "!");
+                    invadedText.text = $"You've been invaded by {enemy.name}!";
+                    invadedText.enabled = true;
+
                     gameOver = true;
                     break;
                 }
             }
         }
     }
+    //mystery---------------------------------------------------------------------------------------
+    void spawnMystery()
+    {
+        ///-11.5, 4, 0
+        ///
+        mysteryExist = true;
+        tempMystery = Instantiate(mystery, new Vector3(-11,4, 0), Quaternion.identity);
+        mysteryTransform = tempMystery.transform;
+        
+    }
+
 
 
 
