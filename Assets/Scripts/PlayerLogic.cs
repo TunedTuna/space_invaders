@@ -4,28 +4,31 @@ using UnityEngine;
 using UnityEngine.Animations;
 using static Enemy;
 
-public class Player : MonoBehaviour
+public class PlayerLogic : MonoBehaviour
 {
-    
-    public GameObject bulletPrefab;
+    [Header("Visual")]
+    [SerializeField] private PlayerVisuals visuals;
+
+
+    [Header("Logic")]
     public GameManager gm;
-
-    public float moveDistance = 5f;// maybe move this to game manager since enemy/play should share this
-
+    public bool isDead;
+   
+    [Header("Gun")]
     public Transform shottingOffset;
+    public GameObject bulletPrefab;
     // pulling this from pong cus im lazy rn
+    [Header("Movement")]
     public float maxTravelHeight;
     public float minTravelHeight;
     public float speed;
+    private float lastDirection;
     //public float collisionBallSpeedUp = 1.5f;
     public string inputAxis;
-    public bool isDead;
+    public float moveDistance = 5f;// maybe move this to game manager since enemy/play should share this
 
-    public GameObject particles;
-    [Header("noise")]
-    public AudioClip deathBoom;
-    public AudioClip pew;
-    public Animator animator;
+
+
 
     private void Start()
     {
@@ -50,7 +53,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        IDK();
+        ShootAnimation();
         PrimativeMovement();
 
 
@@ -58,27 +61,19 @@ public class Player : MonoBehaviour
     private void OnDestroy()
     {
         //unsubscribe when we die
-        particles.gameObject.SetActive(false);
+        visuals.StopParticles();
         gm.gameFinished = true;
         Enemy.OnEnemyDied -= Enemy_onEnemyDied;
     }
   
-    IEnumerator WaitToKill()
-    {
-        yield return new WaitForSeconds(2f);
-        Destroy(gameObject);
 
-    }
     IEnumerator ShootAni()
     {
-        animator.SetBool("isShoot", true);
-        AudioSource audioSrc = gameObject.GetComponent<AudioSource>();
-        audioSrc.clip = pew;
-        audioSrc.Play();
+        visuals.EnterShootFrame();
         GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
         shot.GetComponent<Bullet>().setShooter(gameObject);
         yield return new WaitForSeconds(4f);
-        animator.SetBool("isShoot", false);
+        visuals.ExitShootFrame();
     }
 
     private void PrimativeMovement()
@@ -87,55 +82,42 @@ public class Player : MonoBehaviour
         {
 
             float direction = Input.GetAxis(inputAxis);
+           
             Vector3 newPosition = transform.position + new Vector3(direction, 0, 0) * speed * Time.deltaTime;
             newPosition.x = Mathf.Clamp(newPosition.x, minTravelHeight, maxTravelHeight);
 
             transform.position = newPosition;
-            //if move left, rotate particle system < 90
-
-            //if move right rotates particles system>90
-            if (direction > 0)
-            {
-                particles.transform.rotation = Quaternion.Euler(30, -90, -90);
-            }
-            else if (direction < 0)
-            {
-                particles.transform.rotation = Quaternion.Euler(150, -90, -90);
-
-            }
+            visuals.FlipParticles(direction);
+            lastDirection = direction;
         }
     }
-    private void IDK()
+    private void ShootAnimation()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             StartCoroutine(ShootAni());
-
-
-
-
             //Debug.Log("Bang!");
 
             //Destroy(shot, 3f);
-
         }
     }
 
     public void PlayerHurt(GameObject temp)
     {
-        AudioSource audioSrc = GetComponent<AudioSource>();
-        audioSrc.clip = deathBoom;
-        audioSrc.Play();
+        visuals.PlayHurtNoise();
 
-        //if the player shot
-        //Debug.Log("oof!");
+       
         isDead = true;
         Destroy(temp);
-        //animator.enabled = false;
-        //spriteRenderer.sprite = deathSprite;
-        animator.SetBool("isDead", true);
+        //do what script has to do before shutting down
+        gm.gameFinished = true;
+        Enemy.OnEnemyDied -= Enemy_onEnemyDied;
 
-        StartCoroutine(WaitToKill());
+        //visuals take over
+        visuals.IsDeadAnimation();
+    
+        
+
 
     }
 }
