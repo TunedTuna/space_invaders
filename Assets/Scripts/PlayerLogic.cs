@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.Animations;
 using static Enemy;
 
-public class PlayerLogic : MonoBehaviour
+public class PlayerLogic : MonoBehaviour,IToggle
 {
     [Header("Visual")]
-    [SerializeField] private PlayerVisuals visuals;
+    [SerializeField] private EntityVisuals visuals;
 
 
     [Header("Logic")]
@@ -87,7 +87,8 @@ public class PlayerLogic : MonoBehaviour
             newPosition.x = Mathf.Clamp(newPosition.x, minTravelHeight, maxTravelHeight);
 
             transform.position = newPosition;
-            visuals.FlipParticles(direction);
+            float temp= Input.GetAxis(inputAxis);
+            visuals.FlipParticles(temp);
             lastDirection = direction;
         }
     }
@@ -120,4 +121,8 @@ public class PlayerLogic : MonoBehaviour
 
 
     }
+
+    //IToggle contracts
+    public void Enable() => enabled = true;
+    public void Disable() => enabled = false;
 }

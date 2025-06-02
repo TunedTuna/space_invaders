@@ -1,14 +1,26 @@
+using System.Collections;
 using UnityEngine;
-
-public class PlayerVisuals : MonoBehaviour
+/// <summary>
+/// this script handls the animations of the entities
+/// 
+/// </summary>
+public class EntityVisuals : MonoBehaviour
 {
-    [SerializeField] private PlayerLogic logic;
+    [SerializeField] private MonoBehaviour logicBehavior;
+    private IToggle Logic => logicBehavior as IToggle;
+    private BoxCollider2D bc2d;
 
     public GameObject particles;
     [Header("noise")]
     public AudioClip deathBoom;
     public AudioClip pew;
     public Animator animator;
+    private void Start()
+    {
+        //since this script and animator should be in same object...
+        animator=GetComponent<Animator>();
+        bc2d = GetComponent<BoxCollider2D>();
+    }
 
     public void PlayParticles()
     {
@@ -56,13 +68,25 @@ public class PlayerVisuals : MonoBehaviour
 
     public void IsDeadAnimation()
     {
-        logic.enabled = false;
+        Logic.Disable();
+        bc2d.enabled = false;
         animator.SetBool("isDead", true);
         PlayHurtNoise();
-        StopParticles();
+        if (particles != null)
+        {
+            StopParticles();
+        }
+        //play death animation
+        StartCoroutine(DestroyAfterAnimation(2.5f));
+        
+        
+        
+    }
 
-        //stop particles
-        //change game state
+    private IEnumerator DestroyAfterAnimation(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Destroy(gameObject);
     }
 
 
