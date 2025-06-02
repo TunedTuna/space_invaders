@@ -2,10 +2,14 @@ using UnityEngine;
 
 public class BarricadeRules : MonoBehaviour
 {
+    private enum Side
+    {
+        Left, Right
+    }
+    [SerializeField] private Side _side;
     public int hp = 2;
     public SpriteRenderer sr;
     public Sprite dmg_sprite;
-    public string barricade_side;
     void Start()
     {
         
@@ -26,7 +30,7 @@ public class BarricadeRules : MonoBehaviour
             //fine is right
             //if obj is right, flip damaged
             //if obj is left, reFlip to get left side
-            if (barricade_side.Equals("left"))
+            if (_side==Side.Left)
             {
                 sr.flipX = false;
             }

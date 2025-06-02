@@ -7,14 +7,14 @@ public class Enemy : MonoBehaviour
     //once this is a prefab, stuff will get funky
     private int scoreGiven;
     public delegate void EnemyDied(int points);
-    public static event EnemyDied onEnemyDied;
+    public static event EnemyDied OnEnemyDied;
 
     public delegate void speedDeath();
-    public static event speedDeath onSpeedDeath;
+    public static event speedDeath OnSpeedDeath;
     public bool isDeado;
 
     public delegate void shotsFired();
-    public static event shotsFired onShotsFired;
+    public static event shotsFired OnShotsFired;
 
     public GameObject bulletPrefab;
     public Transform shottingOffset;
@@ -35,15 +35,15 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
-        setScore();
+        SetScore();
         //bulletCoolDown = 5f;
-        animator = GetComponent<Animator>();
+        //animator = GetComponent<Animator>();//edited in inspecto bc child has it
         audioSrc = GetComponent<AudioSource>();
         //spriteRenderer = GetComponent<SpriteRenderer>();
         //animator = GetComponent<Animator>();
         //em = GetComponent<EnemyManager>();
         isDeado = false;
-        StartCoroutine(shootCountDown());
+        StartCoroutine(ShootCountDown());
         
         
 
@@ -54,35 +54,25 @@ public class Enemy : MonoBehaviour
     {
        
     }
-    void OnCollisionEnter2D(Collision2D collision)
+
+    public void EnemyHurt(GameObject temp)
     {
-        if ((collision.gameObject.CompareTag("PB")))
+        animator.SetBool("isDead", true);
+        Destroy(temp); //destroy the bullet
+        if (!isDeado)
         {
-
-            
-            
-            //if the player shot
-            animator.SetBool("isDead", true);
-            Destroy(collision.gameObject);
-            if (!isDeado)
-            {
-                isDeado=true;
-                onEnemyDied?.Invoke(scoreGiven);
-                onSpeedDeath?.Invoke();
-                audioSrc.PlayOneShot(deathBoom);
-                //audioSrc.Play();
-                gameObject.layer = 11;
-            }
-            
-            StopAllCoroutines();
-            StartCoroutine(DestroyAfterDelay(1f));
-
+            isDeado = true;
+            OnEnemyDied?.Invoke(scoreGiven);
+            OnSpeedDeath?.Invoke();
+            audioSrc.PlayOneShot(deathBoom);
+            //audioSrc.Play();
+            gameObject.layer = 11;
         }
- 
-
-
+        
+        StopAllCoroutines();
+        StartCoroutine(DestroyAfterDelay(1f));
     }
-    private void setScore()
+    private void SetScore()
     {
         switch (gameObject.tag)
         {
@@ -93,11 +83,11 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    IEnumerator shootInterval()
+    IEnumerator ShootInterval()
     {
         while (true) 
         {
-            onShotsFired?.Invoke();
+            OnShotsFired?.Invoke();
             audioSrc.clip = pew;
             audioSrc.Play();
             GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
@@ -106,10 +96,10 @@ public class Enemy : MonoBehaviour
             yield return new WaitForSeconds(bulletCoolDown);
         }
     }
-    IEnumerator shootCountDown()
+    IEnumerator ShootCountDown()
     {
         yield return new WaitForSeconds(3f);
-        StartCoroutine(shootInterval());
+        StartCoroutine(ShootInterval());
     }
     private IEnumerator DestroyAfterDelay(float delay)
     {

@@ -6,6 +6,7 @@ using static Enemy;
 
 public class Player : MonoBehaviour
 {
+    
     public GameObject bulletPrefab;
     public GameManager gm;
 
@@ -29,8 +30,8 @@ public class Player : MonoBehaviour
     private void Start()
     {
         //subsribe
-        Enemy.onEnemyDied += Enemy_onEnemyDied;
-        animator= GetComponent<Animator>();
+        Enemy.OnEnemyDied += Enemy_onEnemyDied;
+        //animator= GetComponent<Animator>();
         isDead = false;
     }
 
@@ -38,7 +39,7 @@ public class Player : MonoBehaviour
     {
         //wanna know about points here
         //Debug.Log($"I know about dead Enemy: points:{points}");
-        gm.editCurrentScore(points);
+        gm.EditCurrentScore(points);
         //throw new System.NotImplementedException();
     }
 
@@ -48,75 +49,27 @@ public class Player : MonoBehaviour
         {
             return;
         }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StartCoroutine(shootAni());
-            
-            
-           
 
-            //Debug.Log("Bang!");
+        IDK();
+        PrimativeMovement();
 
-            //Destroy(shot, 3f);
 
-        }
-        if (!isDead)
-        {
-           
-            float direction = Input.GetAxis(inputAxis);
-            Vector3 newPosition = transform.position + new Vector3(direction, 0, 0) * speed * Time.deltaTime;
-            newPosition.x = Mathf.Clamp(newPosition.x, minTravelHeight, maxTravelHeight);
-
-            transform.position = newPosition;
-            //if move left, rotate particle system < 90
-            
-            //if move right rotates particles system>90
-            if (direction > 0)
-            {
-                particles.transform.rotation = Quaternion.Euler(30, -90, -90);
-            }
-            else if (direction < 0)
-            {
-                particles.transform.rotation = Quaternion.Euler(150, -90, -90);
-                
-            }
-        }
-
- 
     }
     private void OnDestroy()
     {
         //unsubscribe when we die
         particles.gameObject.SetActive(false);
         gm.gameFinished = true;
-        Enemy.onEnemyDied -= Enemy_onEnemyDied;
+        Enemy.OnEnemyDied -= Enemy_onEnemyDied;
     }
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        AudioSource audioSrc =GetComponent<AudioSource>();
-        audioSrc.clip = deathBoom;
-        audioSrc.Play();
-
-        //if the player shot
-        //Debug.Log("oof!");
-        isDead = true;
-            Destroy(collision.gameObject);
-        //animator.enabled = false;
-        //spriteRenderer.sprite = deathSprite;
-        animator.SetBool("isDead", true);
-        
-        StartCoroutine(waitToKill());
-        
-
-
-    }
-    IEnumerator waitToKill()
+  
+    IEnumerator WaitToKill()
     {
         yield return new WaitForSeconds(2f);
         Destroy(gameObject);
 
     }
-    IEnumerator shootAni()
+    IEnumerator ShootAni()
     {
         animator.SetBool("isShoot", true);
         AudioSource audioSrc = gameObject.GetComponent<AudioSource>();
@@ -126,5 +79,63 @@ public class Player : MonoBehaviour
         shot.GetComponent<Bullet>().setShooter(gameObject);
         yield return new WaitForSeconds(4f);
         animator.SetBool("isShoot", false);
+    }
+
+    private void PrimativeMovement()
+    {
+        if (!isDead)
+        {
+
+            float direction = Input.GetAxis(inputAxis);
+            Vector3 newPosition = transform.position + new Vector3(direction, 0, 0) * speed * Time.deltaTime;
+            newPosition.x = Mathf.Clamp(newPosition.x, minTravelHeight, maxTravelHeight);
+
+            transform.position = newPosition;
+            //if move left, rotate particle system < 90
+
+            //if move right rotates particles system>90
+            if (direction > 0)
+            {
+                particles.transform.rotation = Quaternion.Euler(30, -90, -90);
+            }
+            else if (direction < 0)
+            {
+                particles.transform.rotation = Quaternion.Euler(150, -90, -90);
+
+            }
+        }
+    }
+    private void IDK()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            StartCoroutine(ShootAni());
+
+
+
+
+            //Debug.Log("Bang!");
+
+            //Destroy(shot, 3f);
+
+        }
+    }
+
+    public void PlayerHurt(GameObject temp)
+    {
+        AudioSource audioSrc = GetComponent<AudioSource>();
+        audioSrc.clip = deathBoom;
+        audioSrc.Play();
+
+        //if the player shot
+        //Debug.Log("oof!");
+        isDead = true;
+        Destroy(temp);
+        //animator.enabled = false;
+        //spriteRenderer.sprite = deathSprite;
+        animator.SetBool("isDead", true);
+
+        StartCoroutine(WaitToKill());
+
     }
 }

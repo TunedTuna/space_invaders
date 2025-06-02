@@ -48,9 +48,9 @@ public class EnemyManager : MonoBehaviour
     void Start()
     {
         
-        Enemy.onSpeedDeath += Enemy_onSpeedDeath;
+        Enemy.OnSpeedDeath += Enemy_onSpeedDeath;
         //create formation
-        formation();
+        Formation();
         startPosition = papaTransform.position;
         StartCoroutine(MoveParent());
         enemyRemaining = numEnemiesAcross * 3;
@@ -89,7 +89,7 @@ public class EnemyManager : MonoBehaviour
             gameOver = false;
           
             
-            Enemy.onSpeedDeath += Enemy_onSpeedDeath;
+            Enemy.OnSpeedDeath += Enemy_onSpeedDeath;
             //create formation
             
             papaTransform.position = startPosition;
@@ -98,15 +98,15 @@ public class EnemyManager : MonoBehaviour
             speedInc = 1f / enemyRemaining;
             secondsPerStep = 1f;
             yCoord = 0f;
-            deleteFormation();
-            formation();
+            DeleteFormation();
+            Formation();
             
         }
 
         if (!mysteryExist)
         {
-            spawnMystery();
-            StartCoroutine(moveMystery());
+            SpawnMystery();
+            StartCoroutine(MoveMystery());
 
 
 
@@ -119,19 +119,19 @@ public class EnemyManager : MonoBehaviour
             Debug.Log("U win!");
             invadedText.color = Color.green;
             invadedText.enabled = true;
-            StartCoroutine(creditsCountdown());
+            StartCoroutine(CreditsCountdown());
         }
 
 
 
     }
-    IEnumerator creditsCountdown()
+    IEnumerator CreditsCountdown()
     {
         yield return new WaitForSeconds(2f);
         SceneManager.LoadScene("Credits");
     }
 
-    void deleteFormation()
+    void DeleteFormation()
     {
         for (int i = papaTransform.childCount - 1; i >= 0; i--)
         {
@@ -139,7 +139,7 @@ public class EnemyManager : MonoBehaviour
             Destroy(enemy.gameObject);  // Destroy the child GameObject
         }
     }
-    void formation()
+    void Formation()
     {
         //for  i
         //a (0+x,0,0) *i
@@ -188,7 +188,7 @@ public class EnemyManager : MonoBehaviour
 
             yCoord -= 1f;
             papaTransform.position = new Vector3(papaTransform.position.x, yCoord, 0);
-            checkInvasion();
+            CheckInvasion();
             yield return new WaitForSeconds(secondsPerStep);
 
             for (float x = moveDistance; x > 0; x -= moveSpeed)
@@ -198,12 +198,12 @@ public class EnemyManager : MonoBehaviour
             }
             yCoord -= 1f;
             papaTransform.position = new Vector3(papaTransform.position.x, yCoord, 0);
-            checkInvasion();
+            CheckInvasion();
             yield return new WaitForSeconds(secondsPerStep);
 
         }
     }
-    IEnumerator moveMystery()
+    IEnumerator MoveMystery()
     {
         float yCoord = 4;
         float mysteryDist = moveDistance * 2;
@@ -234,7 +234,7 @@ public class EnemyManager : MonoBehaviour
         
         
     }
-    void checkInvasion()
+    void CheckInvasion()
     {
         for (int i = 0; i < papaTransform.childCount; i++)
         {
@@ -256,7 +256,7 @@ public class EnemyManager : MonoBehaviour
         }
     }
     //mystery---------------------------------------------------------------------------------------
-    void spawnMystery()
+    void SpawnMystery()
     {
         ///-11.5, 4, 0
         ///

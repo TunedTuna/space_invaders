@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -12,16 +13,25 @@ public class ScoreData
     public int highScore;
 }
 
-
 public class GameManager : MonoBehaviour
 {
+    //game state
+    private enum State
+    {
+        WaitingToStart,
+        CountDownToStart,
+        GamePlaying,
+        GameOver,
 
+    }
+    private State state;
+    public EventHandler OnStateChange;
     //public GameObject legend;
     public TextMeshProUGUI currentScore_text;
     public TextMeshProUGUI hiscore_text;
-    public GameObject enemy;    //demo ver
-    public GameObject player;
+    //public GameObject enemy;    //demo ver//the doofus off screen in Game_v1
     public GameObject barricade_prefab;
+
     //scorestuff
     private int score;
     private string scoreFilePath;
@@ -57,8 +67,8 @@ public class GameManager : MonoBehaviour
         gameFinished = false;
         fin = false;
         invadedText.enabled = false;
-        enemy.SetActive(false);
-        enemyAble();//turn off
+        //enemy.SetActive(false);
+        EnemyAble();//turn off
 
     }
 
@@ -84,7 +94,7 @@ public class GameManager : MonoBehaviour
         //}
         if (Input.GetKeyDown(KeyCode.R) && gameFinished)
         {
-            restartGame();
+            RestartGame();
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -96,14 +106,14 @@ public class GameManager : MonoBehaviour
             invadedText.text = "You died :(\n" +
                 "Game Over";
             invadedText.enabled=true;
-            hiscoreManager();
+            HiScoreManager();
             //player.SetActive(false);
-            enemyAble(); //turn off
-            StartCoroutine(creditsCountdown());
+            EnemyAble(); //turn off
+            StartCoroutine(CreditsCountdown());
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            resetHiScore();
+            ResetHiScore();
             editHiScore();
 
         }
@@ -111,6 +121,8 @@ public class GameManager : MonoBehaviour
 
     IEnumerator StartGameWithDelay()
     {
+        state=State.WaitingToStart;
+        OnStateChange?.Invoke(this,EventArgs.Empty);
         // Hide the legend and wait for 3 seconds
         //legend.SetActive(false);
 
@@ -119,31 +131,16 @@ public class GameManager : MonoBehaviour
 
         // Now, start the game
         gameStarted = true;
-        enemyAble();// turn on
-        spawnBarricade();
+        EnemyAble();// turn on
+        SpawnBarricade();
         Debug.Log("Game Started!");
     }
-    IEnumerator creditsCountdown()
+    IEnumerator CreditsCountdown()
     {
         yield return new WaitForSeconds(2f);
         SceneManager.LoadScene("Credits");
     }
 
-    public bool IsGameStarted()
-    {
-        return gameStarted;
-    }
-
-
-    void restartGame()
-    {
-        //reset enemy, current score,player position (0,-3,0)
-        score = 0;
-        //player.SetActive(true);
-        gameFinished = false;
-        fin = false;
-        enemyAble();// turn on
-    }
 
     //score file stuff ---------------------------------------------------------------
 
@@ -175,7 +172,7 @@ public class GameManager : MonoBehaviour
         hiscore_text.text = "Hi-Score\n" + scoreData.highScore.ToString("D4");
     }
     //text stuff-------------------------------------------------------------------------
-    public void hiscoreManager()
+    public void HiScoreManager()
     {
         //call this when player dies
 
@@ -186,7 +183,7 @@ public class GameManager : MonoBehaviour
         }
         editHiScore();
     }
-    public void editCurrentScore(int x)
+    public void EditCurrentScore(int x)
     {
         //everytime an enemy dies
         //event?
@@ -194,25 +191,25 @@ public class GameManager : MonoBehaviour
         currentScore_text.text = "Score\n" + score.ToString("D4");
     }
 
-    void resetHiScore()
+    void ResetHiScore()
     {
         scoreData.highScore = 0;
     }
     //enemy mangager handler? ----------------------------------------------------------------
-    void enemyAble()
+    void EnemyAble()
     {
         em.enabled = !em.enabled;
         //Debug.Log($"Script is: {em.enabled}");
     }
     //a getter just cus-------------------------------------------
-    public bool getGameFinished()
+    public bool GetGameFinished()
     {
         return gameFinished;
     }
 
     //barricade spawner?----------------------------------------------------------------------------------
 
-    void spawnBarricade()
+    void SpawnBarricade()
     {
         float xCoord = -4.5f;
         float yCoord = -2.7f;
@@ -224,5 +221,37 @@ public class GameManager : MonoBehaviour
         
         cover = Instantiate(barricade_prefab, new Vector3((-xCoord), yCoord, 0), Quaternion.identity);
     }
+
+    public bool IsGamePlaying()
+    {
+        return state == State.GamePlaying;
+    }
+    public bool IsGameWaiting()
+    {
+        return state==State.CountDownToStart;
+    }
+    public bool IsGameOver()
+    {
+        return state==State.GameOver;   
+    }
+
+
+    public bool IsGameStarted()
+    {
+        return gameStarted;
+    }
+
+
+    void RestartGame()
+    {
+        //just reload the scene?
+        //reset enemy, current score,player position (0,-3,0)
+        score = 0;
+        //player.SetActive(true);
+        gameFinished = false;
+        fin = false;
+        EnemyAble();// turn on
+    }
+
 
 }
