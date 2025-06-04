@@ -69,8 +69,9 @@ public class Enemy : MonoBehaviour,IToggle
         
         Destroy(temp); //destroy the bullet
         //do logic then hand keys to Visuals
-        if (!isDeado)
+        if (!isDeado && enemyType !=EnemyType.Mystery)
         {
+            visuals.SetGenericDeath();
             isDeado = true;
             OnEnemyDied?.Invoke(scoreGiven);
             OnSpeedDeath?.Invoke();
@@ -100,8 +101,9 @@ public class Enemy : MonoBehaviour,IToggle
         {
             OnShotsFired?.Invoke();
             visuals.EnterShootFrame();
-
+            visuals.PlayMuzzleFLash();
             yield return new WaitForSeconds(1f);//let animaton sync w/ bullet
+            
             GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
             shot.GetComponent<Bullet>().setShooter(gameObject);
             //Debug.Log("Bang!");

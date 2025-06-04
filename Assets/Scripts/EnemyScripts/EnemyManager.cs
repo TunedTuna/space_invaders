@@ -9,8 +9,8 @@ public class EnemyManager : MonoBehaviour
     public EventHandler OnInvaded;
     [Header("Enemy layout")]
     public int numEnemiesAcross = 1; //loop through number of enemies using width to seperate same and hight to seperate different types(i)
-    public int widthPerEnemy = 1; //x
-    public int heightPerEnemy = 1; //y
+    public float widthPerEnemy = 1f; //x
+    public float heightPerEnemy = 1f; //y
 
     [Header("Gameplay setting")]
     public float secondsPerStep = 1;
@@ -30,14 +30,15 @@ public class EnemyManager : MonoBehaviour
     public Transform papaTransform;
     public int enemyRemaining;
     private Vector3 startPosition;
-    [SerializeField] private float maxLeft=7f;
+    //these two should change based on number of enemies, otherwise they'd go offsreen
+    [SerializeField] private float maxLeft=-7f;
     [SerializeField] private float maxRight = 7f;
 
     [Header("Movement Settings")]
-    public float moveDistance = 5f;  // How far the parent moves left/right per step
+    public float moveDistance; // How far the parent moves left/right per step 5f //dog water
     public float moveSpeed = 1f;     // Speed of the choppy movement
     public float speedInc;
-    public float yCoord = 0f;
+    public float yCoord;
     [Header("Da RUles ")]
     public GameManager gm;
     public GameObject player;
@@ -59,7 +60,7 @@ public class EnemyManager : MonoBehaviour
         StartCoroutine(MoveParent());
         enemyRemaining = numEnemiesAcross * 3;
         speedInc = 1f / enemyRemaining;
-        yCoord = 0f;
+        
         gameOver = false;
         invadedText.enabled = false;
         mysteryExist = false;
@@ -101,7 +102,7 @@ public class EnemyManager : MonoBehaviour
             Enemy.OnSpeedDeath += Enemy_onSpeedDeath;
             //create formation
             
-            papaTransform.position = startPosition;
+            papaTransform.position = startPosition;//what?
             //StartCoroutine(MoveParent());
             enemyRemaining = numEnemiesAcross * 3;
             speedInc = 1f / enemyRemaining;
@@ -168,13 +169,18 @@ public class EnemyManager : MonoBehaviour
     }
     IEnumerator MoveParent()
     {
+        //take current position
+        //sweep right
+        //move down
+        //sweep left
+        //move down
         while (!gameOver)
         //move while game start
         {
             //move right
             if (gameOver) { yield break; }
 
-            for (float x = 0; x < moveDistance; x += moveSpeed)
+            for (float x = papaTransform.position.x; x < maxRight; x += moveSpeed)
             {
                 papaTransform.position = startPosition + new Vector3(x, yCoord, 0);
                 yield return new WaitForSeconds(secondsPerStep);
@@ -187,7 +193,7 @@ public class EnemyManager : MonoBehaviour
             yield return new WaitForSeconds(secondsPerStep);
 
             //move left
-            for (float x = moveDistance; x > 0; x -= moveSpeed)
+            for (float x = moveDistance; x > maxLeft; x -= moveSpeed)
             {
                 papaTransform.position = startPosition + new Vector3(x, yCoord, 0);
                 yield return new WaitForSeconds(secondsPerStep);
@@ -201,7 +207,7 @@ public class EnemyManager : MonoBehaviour
     }
     IEnumerator MoveMystery()
     {
-        float yCoord = 4;
+        float yCoord = 6;
         float mysteryDist = moveDistance * 2;
         Transform start = mysteryTransform;
         for (int i = 0; i < 3; i++)
@@ -215,6 +221,7 @@ public class EnemyManager : MonoBehaviour
             }
             //chill at end  
             yield return new WaitForSeconds(2f);
+            mystery.GetComponentInChildren<EntityVisuals>().ToggleFlip();
             for (float x =  moveDistance; x >-11f; x -= moveSpeed)
             {
                 // move left
@@ -224,6 +231,7 @@ public class EnemyManager : MonoBehaviour
             //chill at end  
             //mysteryExist = false;
             yield return new WaitForSeconds(2f);
+            mystery.GetComponentInChildren<EntityVisuals>().ToggleFlip();
         }
         
         
@@ -271,7 +279,7 @@ public class EnemyManager : MonoBehaviour
         ///-11.5, 4, 0
         ///
         mysteryExist = true;
-        mystery = Instantiate(mystery, new Vector3(-11,4, 0), Quaternion.identity);
+        mystery = Instantiate(mystery, new Vector3(-9,6, 0), Quaternion.identity);
         mysteryTransform = mystery.transform;
         
     }

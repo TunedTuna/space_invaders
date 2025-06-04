@@ -9,8 +9,13 @@ public class EntityVisuals : MonoBehaviour
     [SerializeField] private MonoBehaviour logicBehavior;
     private IToggle Logic => logicBehavior as IToggle;
     private BoxCollider2D bc2d;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private Sprite genericDeath;
 
+    [Header("Particles")]
     public GameObject particles;
+    [SerializeField] private ParticleSystem muzzleFlash;
+
     [Header("noise")]
     public AudioClip deathBoom;
     public AudioClip pew;
@@ -22,12 +27,18 @@ public class EntityVisuals : MonoBehaviour
         bc2d = GetComponent<BoxCollider2D>();
     }
 
-    public void PlayParticles()
+    public void PlayMuzzleFLash()
     {
-
+        if (muzzleFlash != null)
+        {
+            //muzzleFlashes, 
+            muzzleFlash.Play();
+        }
+        
     }
     public void StopParticles()
     {
+        //the boosters
         particles.SetActive(false);
     }
     public void EnterShootFrame()
@@ -59,7 +70,10 @@ public class EntityVisuals : MonoBehaviour
         }
   
     }
-
+    public void ToggleFlip()
+    {
+        spriteRenderer.flipX = !spriteRenderer.flipX;
+    }
     public void PlayHurtNoise()
     {
         AudioSource audioSrc = GetComponent<AudioSource>();
@@ -82,6 +96,11 @@ public class EntityVisuals : MonoBehaviour
         
         
         
+    }
+    public void SetGenericDeath()
+    {
+        //temporary, animator will handles this and the timing later
+        spriteRenderer.sprite= genericDeath;
     }
 
     private IEnumerator DestroyAfterAnimation(float delay)

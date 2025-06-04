@@ -131,10 +131,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logicBehavior: {fileID: 8170353187106913793}
+  spriteRenderer: {fileID: 8717264587261814387}
+  genericDeath: {fileID: -1758241869, guid: 8392138897c2b8c47a97c5e60d47c7e2, type: 3}
   particles: {fileID: 0}
+  muzzleFlash: {fileID: 0}
   deathBoom: {fileID: 8300000, guid: 4e1ff8faed12a475eba9be0e46072269, type: 3}
   pew: {fileID: 8300000, guid: 06ada5590eba8d6489b36c6f3c54ff78, type: 3}
-  animator: {fileID: 0}
+  animator: {fileID: 2628264638205608761}
 --- !u!82 &3243521621322061190
 AudioSource:
   m_ObjectHideFlags: 0

@@ -72,6 +72,8 @@ public class PlayerLogic : MonoBehaviour,IToggle
     IEnumerator ShootAni()
     {
         visuals.EnterShootFrame();
+        visuals.PlayMuzzleFLash();
+        //yield return new WaitForSeconds(1f);//let animaton sync w/ bullet
         GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
         shot.GetComponent<Bullet>().setShooter(gameObject);
         yield return new WaitForSeconds(4f);
@@ -89,7 +91,7 @@ public class PlayerLogic : MonoBehaviour,IToggle
             newPosition.x = Mathf.Clamp(newPosition.x, minTravelHeight, maxTravelHeight);
 
             transform.position = newPosition;
-            float temp= Input.GetAxis(inputAxis);
+            float temp= Input.GetAxisRaw(inputAxis);
             visuals.FlipParticles(temp);
             lastDirection = direction;
         }

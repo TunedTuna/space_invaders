@@ -489,6 +489,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 285586882}
   m_CullTransparentMesh: 1
+--- !u!1 &503223261
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 503223262}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &503223262
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503223261}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -9, y: 6, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &579304300
 GameObject:
   m_ObjectHideFlags: 0
@@ -1695,6 +1726,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 731187574}
     - target: {fileID: 6682943060736138697, guid: 5352e74380ec6c24eb6816bfcc6988cb, type: 3}
+      propertyPath: yCoord
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6682943060736138697, guid: 5352e74380ec6c24eb6816bfcc6988cb, type: 3}
+      propertyPath: maxLeft
+      value: -7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6682943060736138697, guid: 5352e74380ec6c24eb6816bfcc6988cb, type: 3}
       propertyPath: invadedText
       value: 
       objectReference: {fileID: 1704391291}
@@ -1702,6 +1741,18 @@ PrefabInstance:
       propertyPath: papaTransform
       value: 
       objectReference: {fileID: 964545450}
+    - target: {fileID: 6682943060736138697, guid: 5352e74380ec6c24eb6816bfcc6988cb, type: 3}
+      propertyPath: widthPerEnemy
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6682943060736138697, guid: 5352e74380ec6c24eb6816bfcc6988cb, type: 3}
+      propertyPath: heightPerEnemy
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6682943060736138697, guid: 5352e74380ec6c24eb6816bfcc6988cb, type: 3}
+      propertyPath: numEnemiesAcross
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6850891320084673202, guid: 5352e74380ec6c24eb6816bfcc6988cb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1841,3 +1892,4 @@ SceneRoots:
   - {fileID: 2121500686}
   - {fileID: 4374939762743828595}
   - {fileID: 95923099}
+  - {fileID: 503223262}
