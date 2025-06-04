@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
@@ -6,6 +7,7 @@ using static Enemy;
 
 public class PlayerLogic : MonoBehaviour,IToggle
 {
+    public EventHandler OnPlayerDead;
     [Header("Visual")]
     [SerializeField] private EntityVisuals visuals;
 
@@ -115,6 +117,7 @@ public class PlayerLogic : MonoBehaviour,IToggle
         Enemy.OnEnemyDied -= Enemy_onEnemyDied;
 
         //visuals take over
+        gm.GameOverStuff();
         visuals.IsDeadAnimation();
     
         

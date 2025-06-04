@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     }
     private State state;
     public EventHandler OnStateChange;
-    //public GameObject legend;
+    [Header("Scores text")]
     public TextMeshProUGUI currentScore_text;
     public TextMeshProUGUI hiscore_text;
     //public GameObject enemy;    //demo ver//the doofus off screen in Game_v1
@@ -37,14 +37,16 @@ public class GameManager : MonoBehaviour
     private string scoreFilePath;
     private ScoreData scoreData = new ScoreData();
 
-    public static GameManager Instance; //idk what this does...
+    [Header("Wannabe state")]
+    public static GameManager Instance; //idk what this does...//we have an instance, but veryone has direct access to it...?
     private bool gameStarted = false; //to show "main menu"
     public bool gameFinished;
-    public bool fin;    //stop Update from spamming score change
 
+    [Header("Invasion")]
     public EnemyManager em;
     public TextMeshProUGUI invadedText;
 
+    [Header("Audio")]
     public AudioSource audioSource;
     public AudioClip bg;
 
@@ -65,10 +67,11 @@ public class GameManager : MonoBehaviour
         currentScore_text.text = "Score\n0000";
         hiscore_text.text = "Hi-Score\n" + scoreData.highScore.ToString("D4");
         gameFinished = false;
-        fin = false;
+        
         invadedText.enabled = false;
         //enemy.SetActive(false);
         EnemyAble();//turn off
+
 
     }
 
@@ -100,17 +103,6 @@ public class GameManager : MonoBehaviour
         {
             gameFinished = true;
         }
-        if (gameFinished && !fin)
-        {
-            fin = true;
-            invadedText.text = "You died :(\n" +
-                "Game Over";
-            invadedText.enabled=true;
-            HiScoreManager();
-            //player.SetActive(false);
-            EnemyAble(); //turn off
-            StartCoroutine(CreditsCountdown());
-        }
         if (Input.GetKeyDown(KeyCode.Q))
         {
             ResetHiScore();
@@ -119,6 +111,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void GameOverStuff()
+    {
+    
+          
+            invadedText.enabled = true;
+            HiScoreManager();
+            //player.SetActive(false);
+            EnemyAble(); //turn off
+            StartCoroutine(CreditsCountdown());
+        
+    }
+ 
     IEnumerator StartGameWithDelay()
     {
         state=State.WaitingToStart;
@@ -249,9 +253,10 @@ public class GameManager : MonoBehaviour
         score = 0;
         //player.SetActive(true);
         gameFinished = false;
-        fin = false;
+        
         EnemyAble();// turn on
     }
+
 
 
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class EnemyManager : MonoBehaviour
 {
+    public EventHandler OnInvaded;
     [Header("Enemy layout")]
     public int numEnemiesAcross = 1; //loop through number of enemies using width to seperate same and hight to seperate different types(i)
     public int widthPerEnemy = 1; //x
@@ -21,7 +23,6 @@ public class EnemyManager : MonoBehaviour
     public GameObject squid; //c
     [Header("mystery Prefab")]
     public GameObject mystery;//d
-    public GameObject tempMystery;
     public bool mysteryExist;
     public Transform mysteryTransform;
 
@@ -29,6 +30,8 @@ public class EnemyManager : MonoBehaviour
     public Transform papaTransform;
     public int enemyRemaining;
     private Vector3 startPosition;
+    [SerializeField] private float maxLeft=7f;
+    [SerializeField] private float maxRight = 7f;
 
     [Header("Movement Settings")]
     public float moveDistance = 5f;  // How far the parent moves left/right per step
@@ -38,7 +41,8 @@ public class EnemyManager : MonoBehaviour
     [Header("Da RUles ")]
     public GameManager gm;
     public GameObject player;
-    private bool gameOver; //this script acts weird when trying to get GM's "gameFinished"
+    private bool gameOver; //this script acts weird when trying to get GM's "gameFinished" //this script handles the game flow, gm has no ideas, thats why...
+    
 
     public TextMeshProUGUI invadedText;
 
@@ -60,7 +64,14 @@ public class EnemyManager : MonoBehaviour
         invadedText.enabled = false;
         mysteryExist = false;
         Debug.Log("Enemyremaining: " + enemyRemaining);
+        gm.OnStateChange += GameManager_onStateChange;
     }
+
+    private void GameManager_onStateChange(object sender, EventArgs e)
+    {
+        gameOver = gm.IsGameOver();
+    }
+
 
     private void Enemy_onSpeedDeath()
     {
@@ -74,8 +85,7 @@ public class EnemyManager : MonoBehaviour
         }
 
         enemyRemaining--;
-        if (enemyRemaining <= 0) 
-        { enemyRemaining = 0; }
+        OuttaEnemies();
 
         Debug.Log("Enemyremaining: "+enemyRemaining);
         //Debug.Log($"speed boost!, {speedInc}");
@@ -88,7 +98,6 @@ public class EnemyManager : MonoBehaviour
         {
             gameOver = false;
           
-            
             Enemy.OnSpeedDeath += Enemy_onSpeedDeath;
             //create formation
             
@@ -107,27 +116,11 @@ public class EnemyManager : MonoBehaviour
         {
             SpawnMystery();
             StartCoroutine(MoveMystery());
-
-
-
         }
-        if(enemyRemaining <= 0)
-        {
-            //gm.gameFinished = true;
-            //gameObject.SetActive(false);
-            invadedText.text = "Invasion stopped!";
-            Debug.Log("U win!");
-            invadedText.color = Color.green;
-            invadedText.enabled = true;
-            StartCoroutine(CreditsCountdown());
-        }
-
-
-
     }
     IEnumerator CreditsCountdown()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
         SceneManager.LoadScene("Credits");
     }
 
@@ -178,6 +171,7 @@ public class EnemyManager : MonoBehaviour
         while (!gameOver)
         //move while game start
         {
+            //move right
             if (gameOver) { yield break; }
 
             for (float x = 0; x < moveDistance; x += moveSpeed)
@@ -188,9 +182,11 @@ public class EnemyManager : MonoBehaviour
 
             yCoord -= 1f;
             papaTransform.position = new Vector3(papaTransform.position.x, yCoord, 0);
-            CheckInvasion();
+            if (CheckInvasion()) { break; }
+
             yield return new WaitForSeconds(secondsPerStep);
 
+            //move left
             for (float x = moveDistance; x > 0; x -= moveSpeed)
             {
                 papaTransform.position = startPosition + new Vector3(x, yCoord, 0);
@@ -198,7 +194,7 @@ public class EnemyManager : MonoBehaviour
             }
             yCoord -= 1f;
             papaTransform.position = new Vector3(papaTransform.position.x, yCoord, 0);
-            CheckInvasion();
+            if (CheckInvasion()) { break; }
             yield return new WaitForSeconds(secondsPerStep);
 
         }
@@ -210,21 +206,19 @@ public class EnemyManager : MonoBehaviour
         Transform start = mysteryTransform;
         for (int i = 0; i < 3; i++)
         {
-            tempMystery.gameObject.GetComponent<SpriteRenderer>().flipX = true;
             for (float x = start.position.x; x < moveDistance; x += moveSpeed)
             {
                 //move rigght
-                tempMystery.transform.position = startPosition + new Vector3(x, yCoord, 0);
+                mystery.transform.position = startPosition + new Vector3(x, yCoord, 0);
                 yield return new WaitForSeconds(0.5f);
 
             }
             //chill at end  
             yield return new WaitForSeconds(2f);
-            tempMystery.gameObject.GetComponent<SpriteRenderer>().flipX = false;
             for (float x =  moveDistance; x >-11f; x -= moveSpeed)
             {
                 // move left
-                tempMystery.transform.position = startPosition + new Vector3(x, yCoord, 0);
+                mystery.transform.position = startPosition + new Vector3(x, yCoord, 0);
                 yield return new WaitForSeconds(0.5f);
             }
             //chill at end  
@@ -234,7 +228,7 @@ public class EnemyManager : MonoBehaviour
         
         
     }
-    void CheckInvasion()
+    private bool CheckInvasion()
     {
         for (int i = 0; i < papaTransform.childCount; i++)
         {
@@ -246,13 +240,29 @@ public class EnemyManager : MonoBehaviour
                 {
                     gm.gameFinished = true;
                     Debug.Log("You've been invaded by " + enemy.name + "!");
-                    invadedText.text = $"You've been invaded by {enemy.name}!";
+                    invadedText.text = $"You've been invaded\n by {enemy.name}!";
                     invadedText.enabled = true;
 
                     gameOver = true;
-                    break;
+                    gm.GameOverStuff();
+                    return true;
                 }
             }
+        }
+        return false;
+    }
+    private void OuttaEnemies()
+    {
+        if (enemyRemaining <= 0)
+        {
+            //gm.gameFinished = true;
+            //gameObject.SetActive(false);
+            gameOver = true;
+            invadedText.text = "Invasion stopped!";
+            Debug.Log("U win!");
+            invadedText.color = Color.green;
+            invadedText.enabled = true;
+            StartCoroutine(CreditsCountdown());
         }
     }
     //mystery---------------------------------------------------------------------------------------
@@ -261,9 +271,14 @@ public class EnemyManager : MonoBehaviour
         ///-11.5, 4, 0
         ///
         mysteryExist = true;
-        tempMystery = Instantiate(mystery, new Vector3(-11,4, 0), Quaternion.identity);
-        mysteryTransform = tempMystery.transform;
+        mystery = Instantiate(mystery, new Vector3(-11,4, 0), Quaternion.identity);
+        mysteryTransform = mystery.transform;
         
+    }
+
+    private void OnDestroy()
+    {
+        Enemy.OnSpeedDeath -= Enemy_onSpeedDeath;
     }
 
 
