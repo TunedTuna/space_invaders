@@ -100,19 +100,25 @@ public class Enemy : MonoBehaviour,IToggle
         {
             OnShotsFired?.Invoke();
             visuals.EnterShootFrame();
+
+            yield return new WaitForSeconds(1f);//let animaton sync w/ bullet
             GameObject shot = Instantiate(bulletPrefab, shottingOffset.position, Quaternion.identity);
             shot.GetComponent<Bullet>().setShooter(gameObject);
             //Debug.Log("Bang!");
             yield return new WaitForSeconds(bulletCoolDown);
-            visuals.ExitShootFrame();
+            //Debug.Log("uwu");
+            //visuals.ExitShootFrame();
         }
+
         
     }
     IEnumerator ShootCountDown()
     {
         yield return new WaitForSeconds(bulletCoolDown);
         StartCoroutine(ShootInterval());
+
     }
+
 
     //IToggle contracts
     public void Enable() => enabled = true;

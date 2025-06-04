@@ -32,13 +32,14 @@ public class EntityVisuals : MonoBehaviour
     }
     public void EnterShootFrame()
     {
-        animator.SetBool("isShoot", true);
+        animator.SetTrigger("ShotFired");
         AudioSource audioSrc = gameObject.GetComponent<AudioSource>();
         audioSrc.clip = pew;
         audioSrc.Play();
     }
     public void ExitShootFrame()
     {
+        Debug.Log("uwu");
         animator.SetBool("isShoot", false);
     }
     public void FlipParticles(float position)
