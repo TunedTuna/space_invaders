@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -56,11 +57,16 @@ public class Enemy : MonoBehaviour,IToggle
         //em = GetComponent<EnemyManager>();
         isDeado = false;
         StartCoroutine(ShootCountDown());
+        GameManager.Instance.OnStateChange += GameManager_onStateChange;
         
         
 
         //TODO make an event to ping that an enemy has fired so not everyone fires at once. then IEnumerator would most likely be replaced :0
 
+    }
+    private void GameManager_onStateChange(object sender, EventArgs e)
+    {
+        bulletCoolDown /= 2;
     }
     private void Update()
     {

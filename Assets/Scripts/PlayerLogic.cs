@@ -119,7 +119,7 @@ public class PlayerLogic : MonoBehaviour,IToggle
         Enemy.OnEnemyDied -= Enemy_onEnemyDied;
 
         //visuals take over
-        gm.GameOverStuff();
+        gm.InvadedGameOver();
         visuals.IsDeadAnimation();
     
         

@@ -39,6 +39,7 @@ public class EnemyManager : MonoBehaviour
 
     [SerializeField] private float internalLeft;
     [SerializeField] private float internalRight;
+    private Coroutine moveParentThingy;
 
     [Header("Movement Settings")]
     public float moveDistance; // How far the parent moves left/right per step 5f //dog water
@@ -64,7 +65,7 @@ public class EnemyManager : MonoBehaviour
         //create formation
         Formation();
         startPosition = papaTransform.position;
-        StartCoroutine(MoveParent());
+        moveParentThingy= StartCoroutine(MoveParent());
         enemyRemaining = numEnemiesAcross * 3;
         speedInc = 1f / enemyRemaining;
         
@@ -279,6 +280,19 @@ public class EnemyManager : MonoBehaviour
         
         
     }
+     IEnumerator DropParent()
+    {
+        while (!gameOver)
+        {
+            mysteryTemp.transform.position = new Vector3(mysteryTemp.transform.position.x, mysteryTemp.transform.position.y - 1, mysteryTemp.transform.position.z);
+            papaTransform.position = new Vector3(papaTransform.position.x, papaTransform.position.y - 1, papaTransform.position.z);
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+    public void Invaded()
+    {
+        StartCoroutine(DropParent());   
+    }
     private bool CheckInvasion()
     {
         for (int i = 0; i < papaTransform.childCount; i++)
@@ -295,7 +309,7 @@ public class EnemyManager : MonoBehaviour
                     invadedText.enabled = true;
 
                     gameOver = true;
-                    gm.GameOverStuff();
+                    gm.InvadedGameOver();
                     return true;
                 }
             }
@@ -306,6 +320,8 @@ public class EnemyManager : MonoBehaviour
     {
         if (enemyRemaining <= 0)
         {
+            gm.WinnerGameOver();
+            StopCoroutine(moveParentThingy);    
             //gm.gameFinished = true;
             //gameObject.SetActive(false);
             gameOver = true;

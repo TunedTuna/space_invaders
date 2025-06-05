@@ -106,21 +106,26 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             ResetHiScore();
-            editHiScore();
+            EditHiScore();
 
         }
     }
 
-    public void GameOverStuff()
+    public void InvadedGameOver()
     {
-    
-          
+            em.StopAllCoroutines();
+        em.Invaded();
             invadedText.enabled = true;
             HiScoreManager();
             //player.SetActive(false);
-            EnemyAble(); //turn off
+            //EnemyAble(); //turn off
             StartCoroutine(CreditsCountdown());
         
+    }
+    public void WinnerGameOver()
+    {
+        
+        HiScoreManager();
     }
  
     IEnumerator StartGameWithDelay()
@@ -141,7 +146,7 @@ public class GameManager : MonoBehaviour
     }
     IEnumerator CreditsCountdown()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
         SceneManager.LoadScene("Credits");
     }
 
@@ -168,7 +173,7 @@ public class GameManager : MonoBehaviour
         File.WriteAllText(scoreFilePath, json); // Save to file
         Debug.Log("High Score saved to: " + scoreFilePath);
     }
-    void editHiScore()
+    void EditHiScore()
     {
         string json = JsonUtility.ToJson(scoreData, true); // Convert to JSON with formatting
         File.WriteAllText(scoreFilePath, json); // Save the updated high score
@@ -185,7 +190,7 @@ public class GameManager : MonoBehaviour
             scoreData.highScore = score;
 
         }
-        editHiScore();
+        EditHiScore();
     }
     public void EditCurrentScore(int x)
     {
