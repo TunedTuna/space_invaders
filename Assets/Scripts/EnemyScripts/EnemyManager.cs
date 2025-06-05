@@ -34,8 +34,8 @@ public class EnemyManager : MonoBehaviour
     public int enemyRemaining;
     [SerializeField] private Vector3 startPosition;
     //these two should change based on number of enemies, otherwise they'd go offsreen
-    [SerializeField] private float maxLeft=-7f;
-    [SerializeField] private float maxRight = 7f;
+    [SerializeField] private float maxLeft=-6f;
+    [SerializeField] private float maxRight = 6f;
 
     [SerializeField] private float internalLeft;
     [SerializeField] private float internalRight;
@@ -154,13 +154,17 @@ public class EnemyManager : MonoBehaviour
         //get half = center
         //max left= center - getHalf
         //max right= center +getHalf
-        float center = (numEnemiesAcross+1) / 2; //e.g. 5 enemies:  0 - 6, then center= 3;
+        if(numEnemiesAcross > 1)
+        {
+        float center = 0.75f*(numEnemiesAcross-1); //did math on paper (pg48-moleskin book 2 [for me])
         internalLeft = center * -1;
         internalRight = center;
-        float theRealEdge = 8f;
+        float theRealEdge = 9f;
         float max = theRealEdge - numEnemiesAcross;
         maxLeft = max * -1;
         maxRight = max;
+
+        }
         
     }
 
@@ -175,7 +179,11 @@ public class EnemyManager : MonoBehaviour
     }
     void Formation()
     {
+        if (numEnemiesAcross > 1)
+        {
+
         AlignEnemyBlock();
+        }
         //for  i
         //a (0+x,0,0) *i
         //b (0+x, 0+y,0)*i

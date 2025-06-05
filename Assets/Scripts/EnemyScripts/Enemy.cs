@@ -96,7 +96,7 @@ public class Enemy : MonoBehaviour,IToggle
            
             gameObject.layer = DEAD_LAYER;
         }
-        
+        GameManager.Instance.OnStateChange -= GameManager_onStateChange;
         StopAllCoroutines();
         visuals.IsDeadAnimation();
 
@@ -136,6 +136,10 @@ public class Enemy : MonoBehaviour,IToggle
         yield return new WaitForSeconds(bulletCoolDown);
         StartCoroutine(ShootInterval());
 
+    }
+    private void OnDestroy()
+    {
+        GameManager.Instance.OnStateChange -= GameManager_onStateChange;
     }
 
 

@@ -1996,7 +1996,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6682943060736138697, guid: 5352e74380ec6c24eb6816bfcc6988cb, type: 3}
       propertyPath: maxLeft
-      value: -7
+      value: -6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6682943060736138697, guid: 5352e74380ec6c24eb6816bfcc6988cb, type: 3}
+      propertyPath: maxRight
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6682943060736138697, guid: 5352e74380ec6c24eb6816bfcc6988cb, type: 3}
       propertyPath: invadedText
@@ -2020,7 +2024,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6682943060736138697, guid: 5352e74380ec6c24eb6816bfcc6988cb, type: 3}
       propertyPath: numEnemiesAcross
-      value: 1
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6850891320084673202, guid: 5352e74380ec6c24eb6816bfcc6988cb, type: 3}
       propertyPath: m_LocalPosition.x
