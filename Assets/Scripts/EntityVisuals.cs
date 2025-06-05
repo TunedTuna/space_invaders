@@ -50,7 +50,7 @@ public class EntityVisuals : MonoBehaviour
     }
     public void ExitShootFrame()
     {
-        Debug.Log("uwu");
+     
         animator.SetBool("isShoot", false);
     }
     public void FlipParticles(float position)

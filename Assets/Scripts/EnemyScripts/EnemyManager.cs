@@ -22,17 +22,23 @@ public class EnemyManager : MonoBehaviour
     public GameObject crab; //b
     public GameObject squid; //c
     [Header("mystery Prefab")]
-    public GameObject mystery;//d
+    public GameObject mysteryTemp;//d
+    public GameObject mysteryPrefab;//d
     public bool mysteryExist;
     public Transform mysteryTransform;
+    private float mysteryRespawnTimer;
+    private Coroutine mysteryCoroutine;
 
     [Header("Enemy Parent")]
     public Transform papaTransform;
     public int enemyRemaining;
-    private Vector3 startPosition;
+    [SerializeField] private Vector3 startPosition;
     //these two should change based on number of enemies, otherwise they'd go offsreen
     [SerializeField] private float maxLeft=-7f;
     [SerializeField] private float maxRight = 7f;
+
+    [SerializeField] private float internalLeft;
+    [SerializeField] private float internalRight;
 
     [Header("Movement Settings")]
     public float moveDistance; // How far the parent moves left/right per step 5f //dog water
@@ -54,6 +60,7 @@ public class EnemyManager : MonoBehaviour
     {
         
         Enemy.OnSpeedDeath += Enemy_onSpeedDeath;
+        Enemy.OnMysteryDied += Enemy_OnMysteryDied;
         //create formation
         Formation();
         startPosition = papaTransform.position;
@@ -65,7 +72,20 @@ public class EnemyManager : MonoBehaviour
         invadedText.enabled = false;
         mysteryExist = false;
         Debug.Log("Enemyremaining: " + enemyRemaining);
-        gm.OnStateChange += GameManager_onStateChange;
+        gm.OnStateChange += GameManager_onStateChange; //gm tells this script that player died
+        
+
+    }
+    void Update()
+    {
+        ManualGameReset();
+        HandleMystery();
+    }
+
+    private void Enemy_OnMysteryDied()
+    {
+        mysteryExist = false;
+        StopCoroutine(mysteryCoroutine);
     }
 
     private void GameManager_onStateChange(object sender, EventArgs e)
@@ -92,16 +112,16 @@ public class EnemyManager : MonoBehaviour
         //Debug.Log($"speed boost!, {speedInc}");
     }
 
-    void Update()
+
+    private void ManualGameReset()
     {
-        //move left/right until 7 then move down one. move/sec . the less enmes= smaller sec
         if (Input.GetKeyDown(KeyCode.R))
         {
             gameOver = false;
-          
+
             Enemy.OnSpeedDeath += Enemy_onSpeedDeath;
             //create formation
-            
+
             papaTransform.position = startPosition;//what?
             //StartCoroutine(MoveParent());
             enemyRemaining = numEnemiesAcross * 3;
@@ -110,13 +130,7 @@ public class EnemyManager : MonoBehaviour
             yCoord = 0f;
             DeleteFormation();
             Formation();
-            
-        }
 
-        if (!mysteryExist)
-        {
-            SpawnMystery();
-            StartCoroutine(MoveMystery());
         }
     }
     IEnumerator CreditsCountdown()
@@ -133,19 +147,48 @@ public class EnemyManager : MonoBehaviour
             Destroy(enemy.gameObject);  // Destroy the child GameObject
         }
     }
+    private void AlignEnemyBlock()
+    {
+        //take num enmies+1
+        //get half = center
+        //max left= center - getHalf
+        //max right= center +getHalf
+        float center = (numEnemiesAcross+1) / 2; //e.g. 5 enemies:  0 - 6, then center= 3;
+        internalLeft = center * -1;
+        internalRight = center;
+        float theRealEdge = 8f;
+        float max = theRealEdge - numEnemiesAcross;
+        maxLeft = max * -1;
+        maxRight = max;
+        
+    }
+
+    private void SyncAlignment(GameObject enemy,int j)
+    {
+        Transform t = enemy.transform;
+        Vector3 pos = t.position;
+        Vector3 alignX;
+        alignX = new Vector3((internalLeft) + (j*widthPerEnemy), pos.y, pos.z);
+        
+        enemy.transform.localPosition = alignX;
+    }
     void Formation()
     {
+        AlignEnemyBlock();
         //for  i
         //a (0+x,0,0) *i
         //b (0+x, 0+y,0)*i
         //c (0+x, 0+y,0)*i
-        GameObject enemy = null;
+        GameObject enemy;
         for (int j = 0; j < numEnemiesAcross; j++)
         {
             //c
             //vector3(j+widthPerEnemy ,1+ heightPerEnemy,0)
-            enemy = Instantiate(squid, new Vector3(j * widthPerEnemy, 1 * heightPerEnemy, 0), Quaternion.identity);
+            enemy = Instantiate(squid, new Vector3((j * widthPerEnemy) , 1 * heightPerEnemy, 0), Quaternion.identity);
             enemy.transform.SetParent(papaTransform);
+            //x = maxLeft+i
+            SyncAlignment(enemy,j);
+            
 
 
         }
@@ -155,7 +198,8 @@ public class EnemyManager : MonoBehaviour
             //vector3(j+widthPerEnemy ,2+ heightPerEnemy,0)
             enemy = Instantiate(crab, new Vector3(j * widthPerEnemy, 2 * heightPerEnemy, 0), Quaternion.identity);
             enemy.transform.SetParent(papaTransform);
-
+            //x = maxLeft+i
+            SyncAlignment(enemy, j);
         }
         for (int j = 0; j < numEnemiesAcross; j++)
         {
@@ -163,7 +207,8 @@ public class EnemyManager : MonoBehaviour
             //vector3(j+widthPerEnemy ,3+ heightPerEnemy,0)
             enemy = Instantiate(octopus, new Vector3(j * widthPerEnemy, 3 * heightPerEnemy, 0), Quaternion.identity);
             enemy.transform.SetParent(papaTransform);
-
+            //x = maxLeft+i
+            SyncAlignment(enemy,j);
         }
 
     }
@@ -180,58 +225,56 @@ public class EnemyManager : MonoBehaviour
             //move right
             if (gameOver) { yield break; }
 
-            for (float x = papaTransform.position.x; x < maxRight; x += moveSpeed)
+            for (float x = papaTransform.position.x; x <= maxRight; x += moveSpeed)
             {
                 papaTransform.position = startPosition + new Vector3(x, yCoord, 0);
                 yield return new WaitForSeconds(secondsPerStep);
             }
+            yield return new WaitForSeconds(secondsPerStep);
 
             yCoord -= 1f;
             papaTransform.position = new Vector3(papaTransform.position.x, yCoord, 0);
             if (CheckInvasion()) { break; }
 
-            yield return new WaitForSeconds(secondsPerStep);
 
             //move left
-            for (float x = moveDistance; x > maxLeft; x -= moveSpeed)
+            for (float x = papaTransform.position.x; x >= maxLeft; x -= moveSpeed)
             {
                 papaTransform.position = startPosition + new Vector3(x, yCoord, 0);
                 yield return new WaitForSeconds(secondsPerStep);
             }
+            yield return new WaitForSeconds(secondsPerStep);
             yCoord -= 1f;
             papaTransform.position = new Vector3(papaTransform.position.x, yCoord, 0);
             if (CheckInvasion()) { break; }
-            yield return new WaitForSeconds(secondsPerStep);
 
         }
     }
     IEnumerator MoveMystery()
     {
-        float yCoord = 6;
-        float mysteryDist = moveDistance * 2;
-        Transform start = mysteryTransform;
+        float yCoord = mysteryTemp.transform.position.y;
         for (int i = 0; i < 3; i++)
         {
-            for (float x = start.position.x; x < moveDistance; x += moveSpeed)
+            for (float x = mysteryTemp.transform.position.x; x < maxRight+3f; x += moveSpeed)
             {
                 //move rigght
-                mystery.transform.position = startPosition + new Vector3(x, yCoord, 0);
+                mysteryTemp.transform.position = startPosition + new Vector3(x, yCoord, 0);
                 yield return new WaitForSeconds(0.5f);
 
             }
             //chill at end  
             yield return new WaitForSeconds(2f);
-            mystery.GetComponentInChildren<EntityVisuals>().ToggleFlip();
-            for (float x =  moveDistance; x >-11f; x -= moveSpeed)
+            mysteryTemp.GetComponentInChildren<EntityVisuals>().ToggleFlip();
+            for (float x = mysteryTemp.transform.position.x; x >maxLeft-3f; x -= moveSpeed)
             {
                 // move left
-                mystery.transform.position = startPosition + new Vector3(x, yCoord, 0);
+                mysteryTemp.transform.position = startPosition + new Vector3(x, yCoord, 0);
                 yield return new WaitForSeconds(0.5f);
             }
             //chill at end  
             //mysteryExist = false;
             yield return new WaitForSeconds(2f);
-            mystery.GetComponentInChildren<EntityVisuals>().ToggleFlip();
+            mysteryTemp.GetComponentInChildren<EntityVisuals>().ToggleFlip();
         }
         
         
@@ -274,15 +317,33 @@ public class EnemyManager : MonoBehaviour
         }
     }
     //mystery---------------------------------------------------------------------------------------
-    void SpawnMystery()
+    private void SpawnMystery()
     {
+        float rng = UnityEngine.Random.Range(8f, 15f);
+        mysteryRespawnTimer = rng;
         ///-11.5, 4, 0
         ///
         mysteryExist = true;
-        mystery = Instantiate(mystery, new Vector3(-9,6, 0), Quaternion.identity);
-        mysteryTransform = mystery.transform;
-        
+        mysteryTemp = Instantiate(mysteryPrefab, new Vector3(-9,6, 0), Quaternion.identity);
+        mysteryTransform = mysteryTemp.transform;
+        mysteryCoroutine= StartCoroutine(MoveMystery());
+
     }
+    private void HandleMystery()
+    {
+        
+        if (!mysteryExist )
+        {
+            mysteryRespawnTimer -= Time.deltaTime;
+            if ( mysteryRespawnTimer < 0)
+            {
+                SpawnMystery();
+                
+            }
+            
+        }
+    }
+
 
     private void OnDestroy()
     {

@@ -21,6 +21,9 @@ public class Enemy : MonoBehaviour,IToggle
     public delegate void EnemyDied(int points);
     public static event EnemyDied OnEnemyDied;
 
+    public delegate void MysteryDied();
+    public static event MysteryDied OnMysteryDied;
+
     public delegate void speedDeath();
     public static event speedDeath OnSpeedDeath;
     public bool isDeado;
@@ -69,14 +72,22 @@ public class Enemy : MonoBehaviour,IToggle
         
         Destroy(temp); //destroy the bullet
         //do logic then hand keys to Visuals
-        if (!isDeado && enemyType !=EnemyType.Mystery)
+        if (!isDeado)
         {
+            if(enemyType!=EnemyType.Mystery)
+            {
             visuals.SetGenericDeath();
-            isDeado = true;
-            OnEnemyDied?.Invoke(scoreGiven);
             OnSpeedDeath?.Invoke();
+
+            }
+            else
+            {
+                OnMysteryDied?.Invoke();
+            }
+                isDeado = true; //i think this is for enemiese w/ more "HP"?
+            OnEnemyDied?.Invoke(scoreGiven);
             
-            //audioSrc.Play();
+           
             gameObject.layer = DEAD_LAYER;
         }
         
