@@ -25,7 +25,7 @@ public class Enemy : MonoBehaviour,IToggle
     public delegate void MysteryDied();
     public static event MysteryDied OnMysteryDied;
 
-    public delegate void speedDeath();
+    public delegate void speedDeath(int col, int row);
     public static event speedDeath OnSpeedDeath;
     public bool isDeado;
 
@@ -39,6 +39,10 @@ public class Enemy : MonoBehaviour,IToggle
 
     private const int DEAD_LAYER = 11;
 
+    [Header("identification")]
+    [SerializeField] EnemyID enemyID;
+    [SerializeField] private int col;
+    [SerializeField] private int row;
 
 
     //everyone shares the same death "animation"
@@ -83,7 +87,7 @@ public class Enemy : MonoBehaviour,IToggle
             if(enemyType!=EnemyType.Mystery)
             {
             visuals.SetGenericDeath();
-            OnSpeedDeath?.Invoke();
+            OnSpeedDeath?.Invoke(col,row);
 
             }
             else
@@ -136,6 +140,13 @@ public class Enemy : MonoBehaviour,IToggle
         yield return new WaitForSeconds(bulletCoolDown);
         StartCoroutine(ShootInterval());
 
+    }
+    public void SetEnemyID(EnemyID id, int col, int row)
+    {
+        enemyID = id;
+        this.col = col;
+        this.row = row;
+        
     }
     private void OnDestroy()
     {

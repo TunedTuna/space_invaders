@@ -84,6 +84,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 2457785739244962049, guid: d4511b14daaa37c468a74ed386b2583f, type: 3}
   shottingOffset: {fileID: 8415619840062978200}
   bulletCoolDown: 0
+  enemyID: 0
 --- !u!82 &5760216674496932301
 AudioSource:
   m_ObjectHideFlags: 0
@@ -498,6 +499,7 @@ MonoBehaviour:
   logicBehavior: {fileID: 4897501582009788521}
   spriteRenderer: {fileID: 8232807120655946707}
   genericDeath: {fileID: -1758241869, guid: 8392138897c2b8c47a97c5e60d47c7e2, type: 3}
+  papa: {fileID: 6424429897336076485}
   particles: {fileID: 0}
   muzzleFlash: {fileID: 0}
   deathBoom: {fileID: 8300000, guid: 4e1ff8faed12a475eba9be0e46072269, type: 3}

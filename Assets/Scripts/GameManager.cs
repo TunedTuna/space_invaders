@@ -115,7 +115,8 @@ public class GameManager : MonoBehaviour
     {
             em.StopAllCoroutines();
         em.Invaded();
-            invadedText.enabled = true;
+        invadedText.color = Color.red;
+        invadedText.enabled = true;
             HiScoreManager();
             //player.SetActive(false);
             //EnemyAble(); //turn off

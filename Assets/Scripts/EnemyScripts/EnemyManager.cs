@@ -1,8 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -43,7 +47,7 @@ public class EnemyManager : MonoBehaviour
 
     [Header("Movement Settings")]
     public float moveDistance; // How far the parent moves left/right per step 5f //dog water
-    public float moveSpeed = 1f;     // Speed of the choppy movement
+    public float moveSpeed = 0.25f;     // Speed of the choppy movement//look at the inspector
     public float speedInc;
     public float yCoord;
     [Header("Da RUles ")]
@@ -53,10 +57,13 @@ public class EnemyManager : MonoBehaviour
     
 
     public TextMeshProUGUI invadedText;
+    [Header("identification")]
+    [SerializeField] List<EnemyID> listEnemyID;//might be reduandant and removed later... TODO
+    private List<List<Enemy>> enemyColumns;
 
+    [Header("Debug")]
+    [SerializeField] private bool debug_stopEnemyMove = false;
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         
@@ -65,7 +72,11 @@ public class EnemyManager : MonoBehaviour
         //create formation
         Formation();
         startPosition = papaTransform.position;
+        if (!debug_stopEnemyMove)
+        {
+
         moveParentThingy= StartCoroutine(MoveParent());
+        }
         enemyRemaining = numEnemiesAcross * 3;
         speedInc = 1f / enemyRemaining;
         
@@ -79,6 +90,7 @@ public class EnemyManager : MonoBehaviour
     }
     void Update()
     {
+        SeeListList();
         ManualGameReset();
         HandleMystery();
     }
@@ -95,8 +107,9 @@ public class EnemyManager : MonoBehaviour
     }
 
 
-    private void Enemy_onSpeedDeath()
+    private void Enemy_onSpeedDeath(int col, int row)
     {
+
         if (secondsPerStep - speedInc < 0f)
         {
             secondsPerStep = 0.1f;
@@ -107,10 +120,15 @@ public class EnemyManager : MonoBehaviour
         }
 
         enemyRemaining--;
-        OuttaEnemies();
+        if(enemyColumns[col][row] != null)
+        {
+            //if its not null, it is now
+        enemyColumns[col][row] = null;
 
-        Debug.Log("Enemyremaining: "+enemyRemaining);
-        //Debug.Log($"speed boost!, {speedInc}");
+        }
+
+        TrimEdgeColumns();
+        OuttaEnemies();
     }
 
 
@@ -133,6 +151,108 @@ public class EnemyManager : MonoBehaviour
             Formation();
 
         }
+    }
+    private void SeeListList()
+    {
+        //when enemy dies do this but check if start/end are null
+        //if start==null, maxLeft--, enemyColumn.RemoveAt(0);
+        //if end ==null, maxRight++,enemyColumn.RemoveAt(enemyColumn.Count-1);
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            for (int col = 0; col < enemyColumns.Count; col++)
+            {
+                Debug.Log($"Column {col} has {enemyColumns[col].Count} enemies:");
+                for (int row = 0; row < enemyColumns[col].Count; row++)
+                {
+                    Enemy dd = enemyColumns[col][row];
+                    string enemyName = dd != null ? dd.name : "null";
+                    Debug.Log($"  - Row {row}: {enemyName}");
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            for (int i = 0; i < enemyColumns[0].Count; i++)
+            {
+                Debug.Log($"In Z: {i}");
+                Enemy dd = enemyColumns[0][i];
+                string enemyName = dd != null ? dd.name : "null";
+                if (enemyName == null)
+                {
+                    Debug.Log($"{enemyColumns[0][i]} is: {enemyName}");
+                }
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            int lastIndex = enemyColumns.Count - 1;
+            for (int i = 0; i < enemyColumns[lastIndex].Count; i++)
+            {
+                Debug.Log($"In X: {i}");
+                Enemy dd = enemyColumns[lastIndex][i];
+                string enemyName = dd != null ? dd.name : "null";
+                Debug.Log($"  - Row {lastIndex}: {enemyName}");
+            }
+        }
+    }
+
+    private void TrimEdgeColumns()
+    {
+        //left side(first index of enemyColumn)
+        int emptyColCounter;
+        bool isEmpty = true;
+        while (isEmpty)
+        {
+
+
+            emptyColCounter = 0;
+            for (int i = 0; i < enemyColumns[0].Count; i++)
+            {
+
+                if (enemyColumns[0][i] == null)
+                {
+                    emptyColCounter++;
+                }
+            }
+            if (emptyColCounter == 3)
+            {
+                //left col empty, remove
+                Debug.Log("lefy");
+                maxLeft--;
+                enemyColumns.RemoveAt(0);
+                isEmpty = true;
+
+            }
+            else
+            {
+                isEmpty = false;
+            }
+                //right side (last index of enemyColumn)
+                emptyColCounter = 0;
+            int lastIndex = enemyColumns.Count - 1;
+            for (int i = 0; i < enemyColumns[lastIndex].Count; i++)
+            {
+
+                if (enemyColumns[lastIndex][i] == null)
+                {
+                    emptyColCounter++;
+                }
+            }
+            if (emptyColCounter == 3)
+            {
+                //left col empty, remove
+                Debug.Log("righty");
+                maxRight++;
+                enemyColumns.RemoveAt(lastIndex);
+                isEmpty = true;
+            }
+            else
+            {
+                isEmpty = false;
+            }
+        }
+
     }
     IEnumerator CreditsCountdown()
     {
@@ -165,6 +285,11 @@ public class EnemyManager : MonoBehaviour
         maxRight = max;
 
         }
+        enemyColumns = new List<List<Enemy>>();
+        for (int i = 0; i < numEnemiesAcross; i++)
+        {
+            enemyColumns.Add(new List<Enemy>());
+        }
         
     }
 
@@ -189,6 +314,8 @@ public class EnemyManager : MonoBehaviour
         //b (0+x, 0+y,0)*i
         //c (0+x, 0+y,0)*i
         GameObject enemy;
+        int row;
+        int col;
         for (int j = 0; j < numEnemiesAcross; j++)
         {
             //c
@@ -197,7 +324,10 @@ public class EnemyManager : MonoBehaviour
             enemy.transform.SetParent(papaTransform);
             //x = maxLeft+i
             SyncAlignment(enemy,j);
-            
+            enemyColumns[j].Add(enemy.GetComponent<Enemy>());
+            col = j;
+            row = enemyColumns[j].Count - 1;
+            enemy.GetComponent<Enemy>().SetEnemyID(listEnemyID[j],col, row);
 
 
         }
@@ -209,6 +339,10 @@ public class EnemyManager : MonoBehaviour
             enemy.transform.SetParent(papaTransform);
             //x = maxLeft+i
             SyncAlignment(enemy, j);
+            enemyColumns[j].Add(enemy.GetComponent<Enemy>());
+            col = j;
+            row = enemyColumns[j].Count - 1;
+            enemy.GetComponent<Enemy>().SetEnemyID(listEnemyID[j], col, row);
         }
         for (int j = 0; j < numEnemiesAcross; j++)
         {
@@ -218,6 +352,10 @@ public class EnemyManager : MonoBehaviour
             enemy.transform.SetParent(papaTransform);
             //x = maxLeft+i
             SyncAlignment(enemy,j);
+            enemyColumns[j].Add(enemy.GetComponent<Enemy>());
+            col = j;
+            row = enemyColumns[j].Count - 1;
+            enemy.GetComponent<Enemy>().SetEnemyID(listEnemyID[j], col, row);
         }
 
     }
@@ -290,6 +428,7 @@ public class EnemyManager : MonoBehaviour
     }
      IEnumerator DropParent()
     {
+        //GameOver animation
         while (!gameOver)
         {
             mysteryTemp.transform.position = new Vector3(mysteryTemp.transform.position.x, mysteryTemp.transform.position.y - 1, mysteryTemp.transform.position.z);
@@ -303,6 +442,7 @@ public class EnemyManager : MonoBehaviour
     }
     private bool CheckInvasion()
     {
+
         for (int i = 0; i < papaTransform.childCount; i++)
         {
             Transform enemy = papaTransform.GetChild(i);
@@ -334,7 +474,6 @@ public class EnemyManager : MonoBehaviour
             //gameObject.SetActive(false);
             gameOver = true;
             invadedText.text = "Invasion stopped!";
-            Debug.Log("U win!");
             invadedText.color = Color.green;
             invadedText.enabled = true;
             StartCoroutine(CreditsCountdown());
@@ -345,8 +484,6 @@ public class EnemyManager : MonoBehaviour
     {
         float rng = UnityEngine.Random.Range(8f, 15f);
         mysteryRespawnTimer = rng;
-        ///-11.5, 4, 0
-        ///
         mysteryExist = true;
         mysteryTemp = Instantiate(mysteryPrefab, new Vector3(-9,6, 0), Quaternion.identity);
         mysteryTransform = mysteryTemp.transform;
@@ -372,6 +509,7 @@ public class EnemyManager : MonoBehaviour
     private void OnDestroy()
     {
         Enemy.OnSpeedDeath -= Enemy_onSpeedDeath;
+        Enemy.OnMysteryDied-= Enemy_OnMysteryDied;
     }
 
 

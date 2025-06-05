@@ -11,6 +11,7 @@ public class EntityVisuals : MonoBehaviour
     private BoxCollider2D bc2d;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Sprite genericDeath;
+    [SerializeField] private GameObject papa;
 
     [Header("Particles")]
     public GameObject particles;
@@ -106,7 +107,7 @@ public class EntityVisuals : MonoBehaviour
     private IEnumerator DestroyAfterAnimation(float delay)
     {
         yield return new WaitForSeconds(delay);
-        Destroy(gameObject);
+        Destroy(papa);
     }
 
 
