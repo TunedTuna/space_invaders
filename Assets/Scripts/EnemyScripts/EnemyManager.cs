@@ -351,6 +351,7 @@ public class EnemyManager : MonoBehaviour
             enemy.GetComponent<Enemy>().SetEnemyID(listEnemyID[j],col, row);
 
 
+
         }
         for (int j = 0; j < numEnemiesAcross; j++)
         {
@@ -378,7 +379,29 @@ public class EnemyManager : MonoBehaviour
             row = enemyColumns[j].Count - 1;
             enemy.GetComponent<Enemy>().SetEnemyID(listEnemyID[j], col, row);
         }
+        LinkNeigbors();
+    }
 
+    private void LinkNeigbors()
+    {
+
+
+        for(int row =0; row < 3; row++)//go thru each row
+        {
+            for(int col = 0;col < enemyColumns.Count; col++)
+            {
+                if (col>0 )//left is not null
+                {
+                    //enemy at this index.GetComponent<Enemy>.EstablishLeftNeigbor(enemy at left index)
+                    enemyColumns[col][row].GetComponent<Enemy>().EstablishLeftNeigbor(enemyColumns[col - 1][row]);
+                }
+                if (col<enemyColumns.Count-1 )//right is not null
+                {
+                    //enemy at this index.GetComponent<Enemy>.EstablishRightNeigbor(enemy at right index)
+                    enemyColumns[col][row].GetComponent<Enemy>().EstablishRightNeigbor(enemyColumns[col + 1][row]);
+                }
+            }
+        }
     }
     IEnumerator MoveParent()
     {

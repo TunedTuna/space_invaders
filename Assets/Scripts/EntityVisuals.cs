@@ -13,6 +13,9 @@ public class EntityVisuals : MonoBehaviour
     [SerializeField] private SpriteRenderer faceSpriteRenderer;
     [SerializeField] private Sprite genericDeath;
     [SerializeField] private GameObject papa;
+    [SerializeField] private Animator faceAnimator;
+    [SerializeField] private Animator bodyAnimator;
+    [SerializeField] private float syncFaceDelay;
 
     [Header("Particles")]
     public GameObject particles;
@@ -21,7 +24,7 @@ public class EntityVisuals : MonoBehaviour
     [Header("noise")]
     public AudioClip deathBoom;
     public AudioClip pew;
-    public Animator animator;
+    public Animator animator;//does nothing for 3/4 enemeies, tied to mstery rn
     private void Start()
     {
         //since this script and animator should be in same object...
@@ -88,6 +91,9 @@ public class EntityVisuals : MonoBehaviour
         Logic.Disable();
         bc2d.enabled = false;
         animator.SetBool("isDead", true);
+        
+        bodyAnimator.SetBool("isDead", true);
+        DisableFace();
         PlayHurtNoise();
         if (particles != null)
         {
@@ -99,17 +105,21 @@ public class EntityVisuals : MonoBehaviour
         
         
     }
-    public void SetGenericDeath()
+    public void DisableFace()
     {
         //temporary, animator will handles this and the timing later
-        bodySpriteRenderer.sprite= genericDeath;
+        
         if(faceSpriteRenderer != null)
         {
         faceSpriteRenderer.enabled = false;
 
         }
     }
-
+    public void ShockTheHomies()
+    {
+        faceAnimator.SetTrigger("isShocked");
+    }
+ 
     private IEnumerator DestroyAfterAnimation(float delay)
     {
         yield return new WaitForSeconds(delay);

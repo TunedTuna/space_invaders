@@ -87,6 +87,8 @@ MonoBehaviour:
   enemyID: 0
   col: 0
   row: 0
+  leftNeighbor: {fileID: 0}
+  rightNeighbor: {fileID: 0}
 --- !u!82 &5760216674496932301
 AudioSource:
   m_ObjectHideFlags: 0
@@ -305,6 +307,7 @@ GameObject:
   - component: {fileID: 8489503381222239942}
   - component: {fileID: 8232807120655946707}
   - component: {fileID: 5457291420395485050}
+  - component: {fileID: 5048628311388704541}
   m_Layer: 8
   m_Name: OctoFace
   m_TagString: Untagged
@@ -350,7 +353,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: 87a1a1554ec691f40b3c5f31091a046b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -404,6 +407,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5048628311388704541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7521852371833961460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a810056834f517488b40b713c41e17c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mat: {fileID: 2100000, guid: 87a1a1554ec691f40b3c5f31091a046b, type: 2}
 --- !u!1 &8446446623820258183
 GameObject:
   m_ObjectHideFlags: 0
@@ -637,6 +653,9 @@ MonoBehaviour:
   faceSpriteRenderer: {fileID: 8232807120655946707}
   genericDeath: {fileID: -1758241869, guid: 8392138897c2b8c47a97c5e60d47c7e2, type: 3}
   papa: {fileID: 6424429897336076485}
+  faceAnimator: {fileID: 5457291420395485050}
+  bodyAnimator: {fileID: 2441630391444015274}
+  syncFaceDelay: 0.05
   particles: {fileID: 0}
   muzzleFlash: {fileID: 0}
   deathBoom: {fileID: 8300000, guid: 4e1ff8faed12a475eba9be0e46072269, type: 3}

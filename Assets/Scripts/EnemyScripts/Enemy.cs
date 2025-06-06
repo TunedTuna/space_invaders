@@ -44,6 +44,10 @@ public class Enemy : MonoBehaviour,IToggle
     [SerializeField] private int col;
     [SerializeField] private int row;
 
+    [Header("neighbors")]
+    [SerializeField] private Enemy leftNeighbor;
+    [SerializeField] private Enemy rightNeighbor;
+
 
     //everyone shares the same death "animation"
     //public Sprite deathSprite; // Assign the explosion sprite in Inspector
@@ -86,7 +90,10 @@ public class Enemy : MonoBehaviour,IToggle
         {
             if(enemyType!=EnemyType.Mystery)
             {
-            visuals.SetGenericDeath();
+                //visuals.SetGenericDeath();
+                //timing is weird bc animation needs to happen first?
+                //mysterneeds to be updated bc of these
+                
             OnSpeedDeath?.Invoke(col,row);
 
             }
@@ -102,6 +109,7 @@ public class Enemy : MonoBehaviour,IToggle
         }
         GameManager.Instance.OnStateChange -= GameManager_onStateChange;
         StopAllCoroutines();
+        ShockNeigbor();
         visuals.IsDeadAnimation();
 
     }
@@ -158,8 +166,29 @@ public class Enemy : MonoBehaviour,IToggle
     }
     public void DecrementCol()
     {
+        //to update the column when left side is deleted
         col--;
     }
+    public void EstablishLeftNeigbor(Enemy go)
+    {
+        leftNeighbor = go;
+    }
+    public void EstablishRightNeigbor(Enemy go)
+    {
+        rightNeighbor = go;
+    }
+    public void ShockNeigbor()
+    {
+        if (leftNeighbor != null)
+        {
+            leftNeighbor.visuals.ShockTheHomies();
+        }
+        if (rightNeighbor != null)
+        {
+            rightNeighbor.visuals.ShockTheHomies();
+        }
+    }
+
 
     //IToggle contracts
     public void Enable() => enabled = true;

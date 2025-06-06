@@ -197,6 +197,8 @@ MonoBehaviour:
   enemyID: 0
   col: 0
   row: 0
+  leftNeighbor: {fileID: 0}
+  rightNeighbor: {fileID: 0}
 --- !u!82 &8917963510209492562
 AudioSource:
   m_ObjectHideFlags: 0
@@ -642,3 +644,5 @@ MonoBehaviour:
   deathBoom: {fileID: 8300000, guid: 4e1ff8faed12a475eba9be0e46072269, type: 3}
   pew: {fileID: 8300000, guid: 06ada5590eba8d6489b36c6f3c54ff78, type: 3}
   animator: {fileID: 4762942820356724394}
+  faceAnimator: {fileID: 69465147742380454}
+  bodyAnimator: {fileID: 1601912072051827924}
