@@ -9,7 +9,7 @@ public class ShaderController : MonoBehaviour
     }
     public void EnableGradient()
     {
-        mat.SetFloat("toggleGradient", 1f);
+        mat.SetFloat("_toggleGradient", 1f);
         Debug.Log("Current toggleGradient value: " + mat.GetFloat("toggleGradient"));
 
         Debug.Log("Gradient enabled!");
@@ -18,7 +18,7 @@ public class ShaderController : MonoBehaviour
     }
     public void DisableGradient()
     {
-        mat.SetFloat("toggleGradient", 0f);
+        mat.SetFloat("_toggleGradient", 0f);
         Debug.Log("Gradient disabled!");
 
     }
