@@ -9,7 +9,8 @@ public class EntityVisuals : MonoBehaviour
     [SerializeField] private MonoBehaviour logicBehavior;
     private IToggle Logic => logicBehavior as IToggle;
     private BoxCollider2D bc2d;
-    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private SpriteRenderer bodySpriteRenderer;
+    [SerializeField] private SpriteRenderer faceSpriteRenderer;
     [SerializeField] private Sprite genericDeath;
     [SerializeField] private GameObject papa;
 
@@ -73,7 +74,7 @@ public class EntityVisuals : MonoBehaviour
     }
     public void ToggleFlip()
     {
-        spriteRenderer.flipX = !spriteRenderer.flipX;
+        bodySpriteRenderer.flipX = !bodySpriteRenderer.flipX;
     }
     public void PlayHurtNoise()
     {
@@ -101,7 +102,12 @@ public class EntityVisuals : MonoBehaviour
     public void SetGenericDeath()
     {
         //temporary, animator will handles this and the timing later
-        spriteRenderer.sprite= genericDeath;
+        bodySpriteRenderer.sprite= genericDeath;
+        if(faceSpriteRenderer != null)
+        {
+        faceSpriteRenderer.enabled = false;
+
+        }
     }
 
     private IEnumerator DestroyAfterAnimation(float delay)
