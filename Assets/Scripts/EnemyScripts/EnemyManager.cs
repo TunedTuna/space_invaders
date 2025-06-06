@@ -120,12 +120,12 @@ public class EnemyManager : MonoBehaviour
         }
 
         enemyRemaining--;
-        if(enemyColumns[col][row] != null)
-        {
-            //if its not null, it is now
+
+        //if its not null, it is now
+        Debug.Log($"ID: {enemyColumns[col][row].GetComponent<Enemy>().GetID()}, col:{col}, row:{row}");
         enemyColumns[col][row] = null;
 
-        }
+        
 
         TrimEdgeColumns();
         OuttaEnemies();
@@ -202,7 +202,7 @@ public class EnemyManager : MonoBehaviour
         //left side(first index of enemyColumn)
         int emptyColCounter;
         bool isEmpty = true;
-        while (isEmpty)
+        while (isEmpty && enemyRemaining>0)
         {
 
 
@@ -222,14 +222,20 @@ public class EnemyManager : MonoBehaviour
                 maxLeft--;
                 enemyColumns.RemoveAt(0);
                 isEmpty = true;
+                DecrementAllCol();
 
             }
             else
             {
                 isEmpty = false;
             }
-                //right side (last index of enemyColumn)
-                emptyColCounter = 0;
+
+        }
+        isEmpty = true;
+        while( isEmpty&& enemyRemaining > 0)
+        {
+            //right side (last index of enemyColumn)
+            emptyColCounter = 0;
             int lastIndex = enemyColumns.Count - 1;
             for (int i = 0; i < enemyColumns[lastIndex].Count; i++)
             {
@@ -258,6 +264,21 @@ public class EnemyManager : MonoBehaviour
     {
         yield return new WaitForSeconds(3f);
         SceneManager.LoadScene("Credits");
+    }
+    private void DecrementAllCol()
+    {
+        for (int col = 0; col < enemyColumns.Count; col++)
+        {
+            for (int row = 0; row < enemyColumns[col].Count; row++)
+            {
+                Enemy enemy = enemyColumns[col][row];
+                if (enemy != null)
+                {
+                    enemy.DecrementCol();
+                }
+            }
+        }
+
     }
 
     void DeleteFormation()
@@ -469,7 +490,11 @@ public class EnemyManager : MonoBehaviour
         if (enemyRemaining <= 0)
         {
             gm.WinnerGameOver();
+            if (moveParentThingy != null)
+            {
+
             StopCoroutine(moveParentThingy);    
+            }
             //gm.gameFinished = true;
             //gameObject.SetActive(false);
             gameOver = true;

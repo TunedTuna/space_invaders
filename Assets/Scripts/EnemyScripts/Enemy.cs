@@ -152,7 +152,14 @@ public class Enemy : MonoBehaviour,IToggle
     {
         GameManager.Instance.OnStateChange -= GameManager_onStateChange;
     }
-
+    public EnemyID GetID()
+    {
+        return enemyID;
+    }
+    public void DecrementCol()
+    {
+        col--;
+    }
 
     //IToggle contracts
     public void Enable() => enabled = true;
