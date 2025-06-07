@@ -578,11 +578,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentScore_text: {fileID: 252349288}
   hiscore_text: {fileID: 2038572406}
-  enemy: {fileID: 1445361971}
-  player: {fileID: 1804351942}
   barricade_prefab: {fileID: 2255901376722950413, guid: 4fdcdefad0b045449a8f5277520ea270, type: 3}
   gameFinished: 0
-  fin: 0
   em: {fileID: 765358437}
   invadedText: {fileID: 1296962915}
   audioSource: {fileID: 0}
@@ -1162,12 +1159,17 @@ MonoBehaviour:
   octopus: {fileID: 7483517710255911465, guid: c3b77266ea0668e4289e92aa866a25ed, type: 3}
   crab: {fileID: 7483517710255911465, guid: f97311fc7f4d66b499896c2db37fd1c4, type: 3}
   squid: {fileID: 7483517710255911465, guid: ba4fae24bce6bb4489ef0f0610be8634, type: 3}
-  mystery: {fileID: 7483517710255911465, guid: c98bc0a3a5a697c41b50e84152a025f6, type: 3}
-  tempMystery: {fileID: 0}
+  mysteryTemp: {fileID: 0}
+  mysteryPrefab: {fileID: 0}
   mysteryExist: 0
   mysteryTransform: {fileID: 0}
   papaTransform: {fileID: 2092642833}
   enemyRemaining: 0
+  startPosition: {x: 0, y: 0, z: 0}
+  maxLeft: -6
+  maxRight: 6
+  internalLeft: 0
+  internalRight: 0
   moveDistance: 5
   moveSpeed: 1
   speedInc: 0
@@ -1175,6 +1177,8 @@ MonoBehaviour:
   gm: {fileID: 269194540}
   player: {fileID: 1804351942}
   invadedText: {fileID: 1296962915}
+  listEnemyID: 
+  debug_stopEnemyMove: 0
 --- !u!4 &765358438
 Transform:
   m_ObjectHideFlags: 0
@@ -6345,7 +6349,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1334038182
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6470,11 +6474,6 @@ RectTransform:
   m_AnchoredPosition: {x: 94.4932, y: 25.897165}
   m_SizeDelta: {x: 9.96, y: 5.69}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &1445361971 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7483517710255911465, guid: c3b77266ea0668e4289e92aa866a25ed, type: 3}
-  m_PrefabInstance: {fileID: 7115355429186249692}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1445361976 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6604860522166403265, guid: c3b77266ea0668e4289e92aa866a25ed, type: 3}
