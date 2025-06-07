@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -12,29 +13,40 @@ public class ScoreData
     public int highScore;
 }
 
-
 public class GameManager : MonoBehaviour
 {
+    //game state
+    private enum State
+    {
+        WaitingToStart,
+        CountDownToStart,
+        GamePlaying,
+        GameOver,
 
-    //public GameObject legend;
+    }
+    private State state;
+    public EventHandler OnStateChange;
+    [Header("Scores text")]
     public TextMeshProUGUI currentScore_text;
     public TextMeshProUGUI hiscore_text;
-    public GameObject enemy;    //demo ver
-    public GameObject player;
+    //public GameObject enemy;    //demo ver//the doofus off screen in Game_v1
     public GameObject barricade_prefab;
+
     //scorestuff
     private int score;
     private string scoreFilePath;
     private ScoreData scoreData = new ScoreData();
 
-    public static GameManager Instance; //idk what this does...
+    [Header("Wannabe state")]
+    public static GameManager Instance; //idk what this does...//we have an instance, but veryone has direct access to it...?
     private bool gameStarted = false; //to show "main menu"
     public bool gameFinished;
-    public bool fin;    //stop Update from spamming score change
 
+    [Header("Invasion")]
     public EnemyManager em;
     public TextMeshProUGUI invadedText;
 
+    [Header("Audio")]
     public AudioSource audioSource;
     public AudioClip bg;
 
@@ -55,10 +67,11 @@ public class GameManager : MonoBehaviour
         currentScore_text.text = "Score\n0000";
         hiscore_text.text = "Hi-Score\n" + scoreData.highScore.ToString("D4");
         gameFinished = false;
-        fin = false;
+        
         invadedText.enabled = false;
-        enemy.SetActive(false);
-        enemyAble();//turn off
+        //enemy.SetActive(false);
+        EnemyAble();//turn off
+
 
     }
 
@@ -84,33 +97,42 @@ public class GameManager : MonoBehaviour
         //}
         if (Input.GetKeyDown(KeyCode.R) && gameFinished)
         {
-            restartGame();
+            RestartGame();
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
             gameFinished = true;
         }
-        if (gameFinished && !fin)
-        {
-            fin = true;
-            invadedText.text = "You died :(\n" +
-                "Game Over";
-            invadedText.enabled=true;
-            hiscoreManager();
-            //player.SetActive(false);
-            enemyAble(); //turn off
-            StartCoroutine(creditsCountdown());
-        }
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            resetHiScore();
-            editHiScore();
+            ResetHiScore();
+            EditHiScore();
 
         }
     }
 
+    public void InvadedGameOver()
+    {
+            em.StopAllCoroutines();
+        em.Invaded();
+        invadedText.color = Color.red;
+        invadedText.enabled = true;
+            HiScoreManager();
+            //player.SetActive(false);
+            //EnemyAble(); //turn off
+            StartCoroutine(CreditsCountdown());
+        
+    }
+    public void WinnerGameOver()
+    {
+        
+        HiScoreManager();
+    }
+ 
     IEnumerator StartGameWithDelay()
     {
+        state=State.WaitingToStart;
+        OnStateChange?.Invoke(this,EventArgs.Empty);
         // Hide the legend and wait for 3 seconds
         //legend.SetActive(false);
 
@@ -119,31 +141,16 @@ public class GameManager : MonoBehaviour
 
         // Now, start the game
         gameStarted = true;
-        enemyAble();// turn on
-        spawnBarricade();
+        EnemyAble();// turn on
+        SpawnBarricade();
         Debug.Log("Game Started!");
     }
-    IEnumerator creditsCountdown()
+    IEnumerator CreditsCountdown()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
         SceneManager.LoadScene("Credits");
     }
 
-    public bool IsGameStarted()
-    {
-        return gameStarted;
-    }
-
-
-    void restartGame()
-    {
-        //reset enemy, current score,player position (0,-3,0)
-        score = 0;
-        //player.SetActive(true);
-        gameFinished = false;
-        fin = false;
-        enemyAble();// turn on
-    }
 
     //score file stuff ---------------------------------------------------------------
 
@@ -167,7 +174,7 @@ public class GameManager : MonoBehaviour
         File.WriteAllText(scoreFilePath, json); // Save to file
         Debug.Log("High Score saved to: " + scoreFilePath);
     }
-    void editHiScore()
+    void EditHiScore()
     {
         string json = JsonUtility.ToJson(scoreData, true); // Convert to JSON with formatting
         File.WriteAllText(scoreFilePath, json); // Save the updated high score
@@ -175,7 +182,7 @@ public class GameManager : MonoBehaviour
         hiscore_text.text = "Hi-Score\n" + scoreData.highScore.ToString("D4");
     }
     //text stuff-------------------------------------------------------------------------
-    public void hiscoreManager()
+    public void HiScoreManager()
     {
         //call this when player dies
 
@@ -184,9 +191,9 @@ public class GameManager : MonoBehaviour
             scoreData.highScore = score;
 
         }
-        editHiScore();
+        EditHiScore();
     }
-    public void editCurrentScore(int x)
+    public void EditCurrentScore(int x)
     {
         //everytime an enemy dies
         //event?
@@ -194,25 +201,25 @@ public class GameManager : MonoBehaviour
         currentScore_text.text = "Score\n" + score.ToString("D4");
     }
 
-    void resetHiScore()
+    void ResetHiScore()
     {
         scoreData.highScore = 0;
     }
     //enemy mangager handler? ----------------------------------------------------------------
-    void enemyAble()
+    void EnemyAble()
     {
         em.enabled = !em.enabled;
         //Debug.Log($"Script is: {em.enabled}");
     }
     //a getter just cus-------------------------------------------
-    public bool getGameFinished()
+    public bool GetGameFinished()
     {
         return gameFinished;
     }
 
     //barricade spawner?----------------------------------------------------------------------------------
 
-    void spawnBarricade()
+    void SpawnBarricade()
     {
         float xCoord = -4.5f;
         float yCoord = -2.7f;
@@ -224,5 +231,38 @@ public class GameManager : MonoBehaviour
         
         cover = Instantiate(barricade_prefab, new Vector3((-xCoord), yCoord, 0), Quaternion.identity);
     }
+
+    public bool IsGamePlaying()
+    {
+        return state == State.GamePlaying;
+    }
+    public bool IsGameWaiting()
+    {
+        return state==State.CountDownToStart;
+    }
+    public bool IsGameOver()
+    {
+        return state==State.GameOver;   
+    }
+
+
+    public bool IsGameStarted()
+    {
+        return gameStarted;
+    }
+
+
+    void RestartGame()
+    {
+        //just reload the scene?
+        //reset enemy, current score,player position (0,-3,0)
+        score = 0;
+        //player.SetActive(true);
+        gameFinished = false;
+        
+        EnemyAble();// turn on
+    }
+
+
 
 }

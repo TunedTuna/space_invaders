@@ -14,7 +14,7 @@ public class MysteryEffects : MonoBehaviour
     {
         lastPosition = transform.position;
         sr = GetComponent<SpriteRenderer>();
-        Enemy.onShotsFired += Enemy_onShotsFired;
+        Enemy.OnShotsFired += Enemy_onShotsFired;
         animator= GetComponent<Animator>();
         
     }
@@ -55,6 +55,6 @@ public class MysteryEffects : MonoBehaviour
     }
     private void OnDestroy()
     {
-        Enemy.onShotsFired -= Enemy_onShotsFired;
+        Enemy.OnShotsFired -= Enemy_onShotsFired;
     }
 }
