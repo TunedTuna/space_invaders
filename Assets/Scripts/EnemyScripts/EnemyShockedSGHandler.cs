@@ -9,7 +9,7 @@ public class EnemyShockedSGHandler : StateMachineBehaviour
         ShaderController control = animator.GetComponent<ShaderController>();
         if (control != null)
         {
-            Debug.Log(control);
+            Debug.Log("in the Shader Handler:"+ control);
             control.EnableGradient();
         }
 

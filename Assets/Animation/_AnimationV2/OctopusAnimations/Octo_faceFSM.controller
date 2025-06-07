@@ -142,7 +142,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc33a3241d1448c4b83cda241447c8c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mat: {fileID: 2100000, guid: 87a1a1554ec691f40b3c5f31091a046b, type: 2}
 --- !u!1107 &9159575352336016747
 AnimatorStateMachine:
   serializedVersion: 6

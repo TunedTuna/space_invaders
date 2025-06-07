@@ -246,13 +246,14 @@ MonoBehaviour:
   faceSpriteRenderer: {fileID: 8717264587261814387}
   genericDeath: {fileID: -1758241869, guid: 8392138897c2b8c47a97c5e60d47c7e2, type: 3}
   papa: {fileID: 7282030319624625268}
+  faceAnimator: {fileID: 5593362324792838053}
+  bodyAnimator: {fileID: 2056394594366410932}
+  syncFaceDelay: 0
   particles: {fileID: 0}
   muzzleFlash: {fileID: 0}
   deathBoom: {fileID: 8300000, guid: 4e1ff8faed12a475eba9be0e46072269, type: 3}
   pew: {fileID: 8300000, guid: 06ada5590eba8d6489b36c6f3c54ff78, type: 3}
   animator: {fileID: 2628264638205608761}
-  faceAnimator: {fileID: 5593362324792838053}
-  bodyAnimator: {fileID: 2056394594366410932}
 --- !u!82 &3243521621322061190
 AudioSource:
   m_ObjectHideFlags: 0
@@ -361,6 +362,7 @@ GameObject:
   - component: {fileID: 4657344927188994863}
   - component: {fileID: 8717264587261814387}
   - component: {fileID: 5593362324792838053}
+  - component: {fileID: 1648989878788792097}
   m_Layer: 8
   m_Name: CrabFace
   m_TagString: Untagged
@@ -406,7 +408,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: 32a6906608d3d6b4ca9bd640a6aa0191, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -460,6 +462,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1648989878788792097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4605877148978441428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a810056834f517488b40b713c41e17c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7282030319624625268
 GameObject:
   m_ObjectHideFlags: 0

@@ -109,7 +109,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _GradientRotation: 0
-    - _Gradient_Position: 1.05
+    - _Gradient_Position: 0.34
     - _Gradient_Spread: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
@@ -127,7 +127,7 @@ Material:
     - _toggleGradient: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Blue: {r: 0.10849059, g: 0.37775815, b: 1, a: 0}
+    - _Blue: {r: 0.18396229, g: 0.57686937, b: 1, a: 0}
     - _BottomColor: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
