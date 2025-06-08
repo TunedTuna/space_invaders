@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2090604017848817328}
   - component: {fileID: 6682943060736138697}
   - component: {fileID: 5969582111467174960}
+  - component: {fileID: 4907245651226126828}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -66,28 +67,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe62f3da9779c24f9c7c03c79239c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numEnemiesAcross: 1
-  widthPerEnemy: 1
+  numEnemiesAcross: 8
+  widthPerEnemy: 1.5
   heightPerEnemy: 1
   secondsPerStep: 1
   octopus: {fileID: 6424429897336076485, guid: cd62df56557dee143ae31689d9299f81, type: 3}
   crab: {fileID: 7282030319624625268, guid: b416629adc1a12942be6f2f8cf7457f5, type: 3}
   squid: {fileID: 3577294333117788574, guid: 37e0a83e11073bf41803ceed39c74a4f, type: 3}
-  mystery: {fileID: 8774145046958737062, guid: 9221677dca18b2c4c92be05084b59f2a, type: 3}
-  mysterySpriteRenderer: {fileID: 0}
-  mysteryExist: 0
-  mysteryTransform: {fileID: 0}
   papaTransform: {fileID: 0}
   enemyRemaining: 0
-  maxLeft: 7
-  maxRight: 7
+  startPosition: {x: 0, y: 0, z: 0}
+  maxLeft: -6
+  maxRight: 6
+  internalLeft: 0
+  internalRight: 0
   moveDistance: 5
-  moveSpeed: 1
+  moveSpeed: 0.25
   speedInc: 0
-  yCoord: 0
+  yCoord: 2
   gm: {fileID: 2090604017848817328}
   player: {fileID: 0}
   invadedText: {fileID: 0}
+  listEnemyID: 000000000100000002000000030000000400000005000000060000000700000008000000
+  debug_stopEnemyMove: 0
 --- !u!82 &5969582111467174960
 AudioSource:
   m_ObjectHideFlags: 0
@@ -185,3 +187,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4907245651226126828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3720197933298749942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71dac6a4d429947438bd277af57fce20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mysteryTemp: {fileID: 0}
+  mysteryPrefab: {fileID: 8774145046958737062, guid: 9221677dca18b2c4c92be05084b59f2a, type: 3}
+  mysteryExist: 0
+  mysteryTransform: {fileID: 0}
+  startPosition: {x: 0, y: 0, z: 0}
+  papaTransform: {fileID: 0}
+  moveSpeed: 1.25

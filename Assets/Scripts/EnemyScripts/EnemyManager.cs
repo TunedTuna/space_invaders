@@ -25,13 +25,7 @@ public class EnemyManager : MonoBehaviour
     public GameObject octopus; //a
     public GameObject crab; //b
     public GameObject squid; //c
-    [Header("mystery Prefab")]
-    public GameObject mysteryTemp;//d
-    public GameObject mysteryPrefab;//d
-    public bool mysteryExist;
-    public Transform mysteryTransform;
-    private float mysteryRespawnTimer;
-    private Coroutine mysteryCoroutine;
+
 
     [Header("Enemy Parent")]
     public Transform papaTransform;
@@ -68,7 +62,7 @@ public class EnemyManager : MonoBehaviour
     {
         
         Enemy.OnSpeedDeath += Enemy_onSpeedDeath;
-        Enemy.OnMysteryDied += Enemy_OnMysteryDied;
+        
         //create formation
         Formation();
         startPosition = papaTransform.position;
@@ -82,7 +76,7 @@ public class EnemyManager : MonoBehaviour
         
         gameOver = false;
         invadedText.enabled = false;
-        mysteryExist = false;
+        
         Debug.Log("Enemyremaining: " + enemyRemaining);
         gm.OnStateChange += GameManager_onStateChange; //gm tells this script that player died
         
@@ -92,14 +86,10 @@ public class EnemyManager : MonoBehaviour
     {
         SeeListList();
         ManualGameReset();
-        HandleMystery();
+        
     }
 
-    private void Enemy_OnMysteryDied()
-    {
-        mysteryExist = false;
-        StopCoroutine(mysteryCoroutine);
-    }
+
 
     private void GameManager_onStateChange(object sender, EventArgs e)
     {
@@ -441,41 +431,13 @@ public class EnemyManager : MonoBehaviour
 
         }
     }
-    IEnumerator MoveMystery()
-    {
-        float yCoord = mysteryTemp.transform.position.y;
-        for (int i = 0; i < 3; i++)
-        {
-            for (float x = mysteryTemp.transform.position.x; x < maxRight+3f; x += moveSpeed)
-            {
-                //move rigght
-                mysteryTemp.transform.position = startPosition + new Vector3(x, yCoord, 0);
-                yield return new WaitForSeconds(0.5f);
 
-            }
-            //chill at end  
-            yield return new WaitForSeconds(2f);
-            mysteryTemp.GetComponentInChildren<EntityVisuals>().ToggleFlip();
-            for (float x = mysteryTemp.transform.position.x; x >maxLeft-3f; x -= moveSpeed)
-            {
-                // move left
-                mysteryTemp.transform.position = startPosition + new Vector3(x, yCoord, 0);
-                yield return new WaitForSeconds(0.5f);
-            }
-            //chill at end  
-            //mysteryExist = false;
-            yield return new WaitForSeconds(2f);
-            mysteryTemp.GetComponentInChildren<EntityVisuals>().ToggleFlip();
-        }
-        
-        
-    }
      IEnumerator DropParent()
     {
         //GameOver animation
         while (!gameOver)
         {
-            mysteryTemp.transform.position = new Vector3(mysteryTemp.transform.position.x, mysteryTemp.transform.position.y - 1, mysteryTemp.transform.position.z);
+           
             papaTransform.position = new Vector3(papaTransform.position.x, papaTransform.position.y - 1, papaTransform.position.z);
             yield return new WaitForSeconds(0.5f);
         }
@@ -528,36 +490,12 @@ public class EnemyManager : MonoBehaviour
         }
     }
     //mystery---------------------------------------------------------------------------------------
-    private void SpawnMystery()
-    {
-        float rng = UnityEngine.Random.Range(8f, 15f);
-        mysteryRespawnTimer = rng;
-        mysteryExist = true;
-        mysteryTemp = Instantiate(mysteryPrefab, new Vector3(-9,6, 0), Quaternion.identity);
-        mysteryTransform = mysteryTemp.transform;
-        mysteryCoroutine= StartCoroutine(MoveMystery());
-
-    }
-    private void HandleMystery()
-    {
-        
-        if (!mysteryExist )
-        {
-            mysteryRespawnTimer -= Time.deltaTime;
-            if ( mysteryRespawnTimer < 0)
-            {
-                SpawnMystery();
-                
-            }
-            
-        }
-    }
 
 
     private void OnDestroy()
     {
         Enemy.OnSpeedDeath -= Enemy_onSpeedDeath;
-        Enemy.OnMysteryDied-= Enemy_OnMysteryDied;
+       
     }
 
 
