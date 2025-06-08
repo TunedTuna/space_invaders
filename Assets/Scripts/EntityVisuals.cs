@@ -27,8 +27,9 @@ public class EntityVisuals : MonoBehaviour
     public Animator animator;//does nothing for 3/4 enemeies, tied to mstery rn
     private void Start()
     {
+        animator.SetBool("isDead", false);
         //since this script and animator should be in same object...
-        animator=GetComponent<Animator>();
+        animator =GetComponent<Animator>();
         bc2d = GetComponent<BoxCollider2D>();
     }
 
@@ -91,8 +92,11 @@ public class EntityVisuals : MonoBehaviour
         Logic.Disable();
         bc2d.enabled = false;
         animator.SetBool("isDead", true);
-        
+        if (!papa.CompareTag("Mystery"))
+        {
+
         bodyAnimator.SetBool("isDead", true);
+        }
         DisableFace();
         PlayHurtNoise();
         if (particles != null)
@@ -100,7 +104,7 @@ public class EntityVisuals : MonoBehaviour
             StopParticles();
         }
         //play death animation
-        StartCoroutine(DestroyAfterAnimation(2.5f));
+        StartCoroutine(DestroyAfterAnimation(.75f));
         
         
         

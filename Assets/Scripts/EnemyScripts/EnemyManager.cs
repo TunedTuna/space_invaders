@@ -443,10 +443,13 @@ public class EnemyManager : MonoBehaviour
     }
     IEnumerator MoveMystery()
     {
+        float enhancedMoveSpeed = moveSpeed + 1;
         float yCoord = mysteryTemp.transform.position.y;
+        float realMaxRight = 8f;
+        float realMaxLeft = -8f;
         for (int i = 0; i < 3; i++)
         {
-            for (float x = mysteryTemp.transform.position.x; x < maxRight+3f; x += moveSpeed)
+            for (float x = mysteryTemp.transform.position.x; x < realMaxRight; x += enhancedMoveSpeed)
             {
                 //move rigght
                 mysteryTemp.transform.position = startPosition + new Vector3(x, yCoord, 0);
@@ -456,7 +459,7 @@ public class EnemyManager : MonoBehaviour
             //chill at end  
             yield return new WaitForSeconds(2f);
             mysteryTemp.GetComponentInChildren<EntityVisuals>().ToggleFlip();
-            for (float x = mysteryTemp.transform.position.x; x >maxLeft-3f; x -= moveSpeed)
+            for (float x = mysteryTemp.transform.position.x; x > realMaxLeft; x -= enhancedMoveSpeed)
             {
                 // move left
                 mysteryTemp.transform.position = startPosition + new Vector3(x, yCoord, 0);
@@ -475,7 +478,11 @@ public class EnemyManager : MonoBehaviour
         //GameOver animation
         while (!gameOver)
         {
+            if (mysteryExist)
+            {
+
             mysteryTemp.transform.position = new Vector3(mysteryTemp.transform.position.x, mysteryTemp.transform.position.y - 1, mysteryTemp.transform.position.z);
+            }
             papaTransform.position = new Vector3(papaTransform.position.x, papaTransform.position.y - 1, papaTransform.position.z);
             yield return new WaitForSeconds(0.5f);
         }
